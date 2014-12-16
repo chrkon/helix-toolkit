@@ -317,7 +317,9 @@ namespace WiiDemo
             //else
             if (wiimoteState.IRState.IRSensors[0].Found)
             {
-                relativePosition = wiimoteState.IRState.IRSensors[0].Position;
+                var x = wiimoteState.IRState.IRSensors[0].Position.X;
+                var y = wiimoteState.IRState.IRSensors[0].Position.Y;
+                relativePosition = new PointF(x, y);
             }
             else
             {
