@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace HelixToolkit.Wpf.HID.SpaceNavigator
+namespace HelixToolkit.Wpf.HID
 {
     using System.Diagnostics;
     using System.Runtime.InteropServices;
