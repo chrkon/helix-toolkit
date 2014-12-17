@@ -46,9 +46,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{151949
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit.HID.SpaceNavigator", "HelixToolkit.HID.SpaceNavigator\HelixToolkit.HID.SpaceNavigator.csproj", "{20A2B996-7124-4783-AF5E-907EF7167881}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit.HID.SpaceNavigator", "HelixToolkit.HID\HelixToolkit.HID.SpaceNavigator\HelixToolkit.HID.SpaceNavigator.csproj", "{20A2B996-7124-4783-AF5E-907EF7167881}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit.HID.SpaceNavigator.Wpf", "HelixToolkit.HID.SpaceNavigator.Wpf\HelixToolkit.HID.SpaceNavigator.Wpf.csproj", "{E7C578EB-1D67-49ED-9D41-E790F779A9E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit.HID.SpaceNavigator.Wpf", "HelixToolkit.HID\HelixToolkit.HID.SpaceNavigator.Wpf\HelixToolkit.HID.SpaceNavigator.Wpf.csproj", "{E7C578EB-1D67-49ED-9D41-E790F779A9E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

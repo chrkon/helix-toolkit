@@ -742,7 +742,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\HelixToolkit.HID.SpaceNavigator.Wpf\HelixToolkit.HID.SpaceNavigator.Wpf.csproj">
+    <ProjectReference Include="..\..\..\HelixToolkit.HID\HelixToolkit.HID.SpaceNavigator.Wpf\HelixToolkit.HID.SpaceNavigator.Wpf.csproj">
       <Project>{e7c578eb-1d67-49ed-9d41-e790f779a9e5}</Project>
       <Name>HelixToolkit.HID.SpaceNavigator.Wpf</Name>
     </ProjectReference>
