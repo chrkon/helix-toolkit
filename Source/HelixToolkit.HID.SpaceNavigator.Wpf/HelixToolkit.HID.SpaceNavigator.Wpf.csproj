@@ -8,8 +8,8 @@
     <ProjectGuid>{E7C578EB-1D67-49ED-9D41-E790F779A9E5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HelixToolkit.HID.SpaceNavigator</RootNamespace>
-    <AssemblyName>HelixToolkit.HID.SpaceNavigator</AssemblyName>
+    <RootNamespace>HelixToolkit.HID.SpaceNavigator.Wpf</RootNamespace>
+    <AssemblyName>HelixToolkit.HID.SpaceNavigator.Wpf</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,7 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>..\..\Output\NET45\HelixToolkit.HID.SpaceNavigator.xml</DocumentationFile>
+    <DocumentationFile>..\..\Output\NET45\HelixToolkit.HID.SpaceNavigator.Wpf.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />

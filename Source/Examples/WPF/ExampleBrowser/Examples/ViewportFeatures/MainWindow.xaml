@@ -2,7 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:helix="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
-    xmlns:helixHID="clr-namespace:HelixToolkit.Wpf.HID;assembly=HelixToolkit.Wpf.HID.SpaceNavigator"
+    xmlns:helixHID="clr-namespace:HelixToolkit.HID.SpaceNavigator.Wpf;assembly=HelixToolkit.HID.SpaceNavigator.Wpf"
     Title="ViewportFeaturesDemo" Height="480" Width="640">
     <TabControl Margin="8">
         <TabItem Header="Information">
