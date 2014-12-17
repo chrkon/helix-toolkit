@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit.Wpf", "HelixTo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit", "HelixToolkit\HelixToolkit.csproj", "{7C0E987E-CC34-4B19-BA6B-B381AEABB530}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit.Wpf.HID.SpaceNavigator", "HelixToolkit.Wpf.HID.SpaceNavigator\HelixToolkit.Wpf.HID.SpaceNavigator.csproj", "{20A2B996-7124-4783-AF5E-907EF7167881}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit.HID.SpaceNavigator", "HelixToolkit.HID.SpaceNavigator\HelixToolkit.HID.SpaceNavigator.csproj", "{20A2B996-7124-4783-AF5E-907EF7167881}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

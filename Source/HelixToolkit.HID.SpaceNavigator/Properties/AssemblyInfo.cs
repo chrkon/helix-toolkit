@@ -6,5 +6,5 @@
 
 using System.Reflection;
 
-[assembly: AssemblyTitle("HelixToolkit.Wpf.HID.SpaceNavigator")]
+[assembly: AssemblyTitle("HelixToolkit.HID.SpaceNavigator")]
 [assembly: AssemblyDescription("")]

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit.Wpf.HID.SpaceNavigator_NET40", "HelixToolkit.Wpf.HID.SpaceNavigator\HelixToolkit.Wpf.HID.SpaceNavigator_NET40.csproj", "{26FFEC80-5997-472C-9F58-1D9ECD45B70B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit.Wpf.HID.SpaceNavigator_NET40", "HelixToolkit.HID.SpaceNavigator\HelixToolkit.Wpf.HID.SpaceNavigator_NET40.csproj", "{26FFEC80-5997-472C-9F58-1D9ECD45B70B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixToolkit.Wpf_NET40", "HelixToolkit.Wpf\HelixToolkit.Wpf_NET40.csproj", "{27ED13F0-C6B2-4ABA-A837-52F4775D5455}"
 EndProject
