@@ -52,10 +52,6 @@
     <Compile Include="SpaceNavigatorDecorator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HelixToolkit.HID.SpaceNavigator\HelixToolkit.HID.SpaceNavigator.csproj">
-      <Project>{20a2b996-7124-4783-af5e-907ef7167881}</Project>
-      <Name>HelixToolkit.HID.SpaceNavigator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\HelixToolkit.Wpf\HelixToolkit.Wpf.csproj">
       <Project>{3f3b4548-a9db-4874-86f7-e7c4fec8a351}</Project>
       <Name>HelixToolkit.Wpf</Name>
