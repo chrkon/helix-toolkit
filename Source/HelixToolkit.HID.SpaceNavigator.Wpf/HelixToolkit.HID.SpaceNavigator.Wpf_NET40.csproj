@@ -55,10 +55,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HelixToolkit.HID.SpaceNavigator\HelixToolkit.HID.SpaceNavigator_NET40.csproj">
-      <Project>{7fdb38ba-8d6c-4860-aa21-89eb32fe465e}</Project>
-      <Name>HelixToolkit.HID.SpaceNavigator_NET40</Name>
-    </ProjectReference>
     <ProjectReference Include="..\HelixToolkit.Wpf\HelixToolkit.Wpf_NET40.csproj">
       <Project>{27ed13f0-c6b2-4aba-a837-52f4775d5455}</Project>
       <Name>HelixToolkit.Wpf_NET40</Name>

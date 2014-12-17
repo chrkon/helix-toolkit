@@ -754,10 +754,6 @@
       <Project>{26ffec80-5997-472c-9f58-1d9ecd45b70b}</Project>
       <Name>HelixToolkit.HID.SpaceNavigator.Wpf_NET40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HelixToolkit.HID.SpaceNavigator\HelixToolkit.HID.SpaceNavigator_NET40.csproj">
-      <Project>{7fdb38ba-8d6c-4860-aa21-89eb32fe465e}</Project>
-      <Name>HelixToolkit.HID.SpaceNavigator_NET40</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\HelixToolkit.Wpf\HelixToolkit.Wpf_NET40.csproj">
       <Project>{3F3B4548-A9DB-4874-86F7-E7C4FEC8A351}</Project>
       <Name>HelixToolkit.Wpf_NET40</Name>
