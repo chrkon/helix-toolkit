@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -742,9 +742,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\HelixToolkit.Wpf.Input\HelixToolkit.Wpf.Input.csproj">
+    <ProjectReference Include="..\..\..\HelixToolkit.Wpf.Input\HelixToolkit..Wpf.Input.csproj">
       <Project>{20A2B996-7124-4783-AF5E-907EF7167881}</Project>
-      <Name>HelixToolkit.Wpf.Input</Name>
+      <Name>HelixToolkit..Wpf.Input</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HelixToolkit.Wpf\HelixToolkit.Wpf.csproj">
       <Project>{3F3B4548-A9DB-4874-86F7-E7C4FEC8A351}</Project>
