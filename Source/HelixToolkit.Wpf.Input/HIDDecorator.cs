@@ -199,7 +199,10 @@ namespace HelixToolkit.Wpf.Input
                 this.HID.CameraPan += HID_CameraPan;
                 this.HID.CameraDolly += HID_CameraDolly;
                 this.HID.CameraCrane += HID_CameraCrane;
-                
+
+                this.IsConnected = true;
+                this.HIDName = HID.Name;
+                RaiseConnectionChanged();
             }
             catch (COMException e)
             {
@@ -222,13 +225,16 @@ namespace HelixToolkit.Wpf.Input
                 this.HID.CameraPan -= HID_CameraPan;
                 this.HID.CameraDolly -= HID_CameraDolly;
                 this.HID.CameraCrane -= HID_CameraCrane;
+
+                this.IsConnected = false;
+                this.HIDName = string.Empty;
+                RaiseConnectionChanged();
             }
             catch (COMException e)
             {
                 Trace.WriteLine(e.Message);
             }
         }
-
 
 
         void HID_CameraZoom(double obj)
@@ -266,69 +272,6 @@ namespace HelixToolkit.Wpf.Input
             throw new System.NotImplementedException();
         }
 
-        // todo...
-        /*
-        private void StartDriver()
-        {
-            string exe = @"C:\Program Files\3Dconnexion\3Dconnexion 3DxSoftware\3DxWare\3dxsrv.exe";
-            if (!File.Exists(exe))
-                return;
-            var p = Process.Start(exe, "-searchWarnDlg");
-            Thread.Sleep(2000);
-        }
-
-        private void StopDriver()
-        {
-            string exe = @"C:\Program Files\3Dconnexion\3Dconnexion 3DxSoftware\3DxWare\3dxsrv.exe";
-            if (!File.Exists(exe))
-                return;
-            var p = Process.Start(exe, "-shutdown");
-        }
-        */
-
-        /// <summary>
-        /// The sensor_ sensor input.
-        /// </summary>
-        private void Sensor_SensorInput()
-        {
-            if (this.Controller == null)
-            {
-                return;
-            }
-
-            this.Controller.AddRotateForce(
-                this.Sensitivity * this._sensor.Rotation.Y, this.Sensitivity * this._sensor.Rotation.X);
-
-            if (this.ZoomMode == SpaceNavigatorZoomMode.InOut)
-            {
-                this.Controller.AddZoomForce(this.ZoomSensitivity * 0.001 * this._input.Sensor.Translation.Z);
-            }
-
-            if (this.ZoomMode == SpaceNavigatorZoomMode.UpDown)
-            {
-                this.Controller.AddZoomForce(this.ZoomSensitivity * 0.001 * this._sensor.Translation.Y);
-                if (this.IsPanEnabled)
-                {
-                    this.Controller.AddPanForce(
-                        this.Sensitivity * 0.03 * this._sensor.Translation.X,
-                        this.Sensitivity * 0.03 * this._sensor.Translation.Z);
-                }
-            }
-        }
-
-        /// <summary>
-        /// The input_ device change.
-        /// </summary>
-        /// <param name="reserved">
-        /// The reserved.
-        /// </param>
-        private void input_DeviceChange(int reserved)
-        {
-            this.IsConnected = true;
-            this.Type = (SpaceNavigatorType)this._input.Type;
-            this.NavigatorName = this.Type.ToString();
-            this.RaiseConnectionChanged();
-        }
 
     }
 }

@@ -8,6 +8,11 @@ namespace HelixToolkit
     public interface IHumanInterfaceDevice
     {
         /// <summary>
+        /// The name of the Human Interface Device
+        /// </summary>
+        string Name { get; set; }
+
+        /// <summary>
         /// Camera Track = moving camera horizontal left/right (perpendicular to ViewDirection)
         /// </summary>
         event Action<double> CameraTrack; 
