@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HelixToolkit
 {
-    interface IHumanInterfaceDevice
+    public interface IHumanInterfaceDevice
     {
         /// <summary>
         /// Camera Track = moving camera horizontal left/right (perpendicular to ViewDirection)
