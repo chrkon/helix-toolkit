@@ -56,16 +56,6 @@ namespace HelixToolkit.Wpf.Input
         public HIDDecorator()
         {
             this.Connect();
-
-            /* todo: try to start driver if not available
-             Thread.Sleep(1000);
-                        if (!IsConnected)
-                        {
-                            Disconnect();
-                            Thread.Sleep(1000);
-                            StartDriver();
-                            Connect();
-                        }*/
         }
 
         /// <summary>
@@ -236,38 +226,65 @@ namespace HelixToolkit.Wpf.Input
             }
         }
 
-
-        void HID_CameraZoom(double obj)
+         /// <summary>
+        /// Camera Zoom = increase/decrease Field of View angle
+        /// </summary>
+        void HID_CameraZoom(double delta)
         {
-            throw new System.NotImplementedException();
+            Controller.AddZoomForce(delta);
         }
 
-        void HID_CameraTrack(double obj)
+        /// <summary>
+        /// Camera Track = moving camera left/right (perpendicular to ViewDirection and UpDirection)
+        /// </summary>
+        void HID_CameraTrack(double delta)
         {
-            throw new System.NotImplementedException();
+            var moveDirection = System.Windows.Media.Media3D.Vector3D.CrossProduct(Controller.CameraLookDirection, Controller.CameraUpDirection);
+            moveDirection = moveDirection * delta;
+            Controller.AddMoveForce(moveDirection);
         }
 
+        /// <summary>
+        /// Camera Dolly = moving camera forward/backward (along ViewDirection)
+        /// </summary>
+        void HID_CameraDolly(double delta)
+        {
+            var moveDirection = Controller.CameraLookDirection * delta;
+            Controller.AddMoveForce(moveDirection);
+        }
+
+        /// <summary>
+        /// Camera Crane = moving camera vertical up/down (along UpDirection)
+        /// </summary>
+        void HID_CameraCrane(double delta)
+        {
+            var moveDirection = Controller.CameraUpDirection * delta;
+            Controller.AddMoveForce(moveDirection);
+        }
+        
+        /// <summary>
+        /// Camera Tilt = turning camera up/down around Vector perpendicular to UpDirection and ViewDirection (Aeroplane : Pitch)
+        /// ViewDirection and UpDirection will be changed
+        /// </summary>
         void HID_CameraTilt(double obj)
         {
             throw new System.NotImplementedException();
         }
 
+        /// <summary>
+        /// Camera Rolling = rotate camera left/right around ViewDirection (Aeroplane : Roll)
+        /// only UpDirection will be changed
+        /// </summary>
         void HID_CameraRoll(double obj)
         {
             throw new System.NotImplementedException();
         }
 
+        /// <summary>
+        /// Camera Panning = turning camera left/right around UpDirection (Aeroplane : Yaw)
+        /// only ViewDirection will be changed
+        /// </summary>
         void HID_CameraPan(double obj)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        void HID_CameraDolly(double obj)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        void HID_CameraCrane(double obj)
         {
             throw new System.NotImplementedException();
         }
