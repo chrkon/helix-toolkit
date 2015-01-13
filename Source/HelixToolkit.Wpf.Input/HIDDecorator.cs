@@ -266,8 +266,9 @@ namespace HelixToolkit.Wpf.Input
         /// Camera Tilt = turning camera up/down around Vector perpendicular to UpDirection and ViewDirection (Aeroplane : Pitch)
         /// ViewDirection and UpDirection will be changed
         /// </summary>
-        void HID_CameraTilt(double obj)
+        void HID_CameraTilt(double angle)
         {
+            var rotationAxis = System.Windows.Media.Media3D.Vector3D.CrossProduct(Controller.CameraLookDirection, Controller.CameraUpDirection);
             throw new System.NotImplementedException();
         }
 
@@ -275,8 +276,9 @@ namespace HelixToolkit.Wpf.Input
         /// Camera Rolling = rotate camera left/right around ViewDirection (Aeroplane : Roll)
         /// only UpDirection will be changed
         /// </summary>
-        void HID_CameraRoll(double obj)
+        void HID_CameraRoll(double angle)
         {
+            var rotationAxis = Controller.CameraLookDirection;
             throw new System.NotImplementedException();
         }
 
@@ -284,8 +286,9 @@ namespace HelixToolkit.Wpf.Input
         /// Camera Panning = turning camera left/right around UpDirection (Aeroplane : Yaw)
         /// only ViewDirection will be changed
         /// </summary>
-        void HID_CameraPan(double obj)
+        void HID_CameraPan(double angle)
         {
+            var rotationAxis = Controller.CameraUpDirection;
             throw new System.NotImplementedException();
         }
 
