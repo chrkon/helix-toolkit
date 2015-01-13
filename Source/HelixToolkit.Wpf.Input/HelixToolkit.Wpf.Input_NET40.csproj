@@ -59,10 +59,6 @@
       <Project>{27ed13f0-c6b2-4aba-a837-52f4775d5455}</Project>
       <Name>HelixToolkit.Wpf_NET40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HelixToolkit\HelixToolkit.csproj">
-      <Project>{7c0e987e-cc34-4b19-ba6b-b381aeabb530}</Project>
-      <Name>HelixToolkit</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

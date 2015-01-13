@@ -325,12 +325,6 @@
   <ItemGroup>
     <None Include="ShaderEffects\InterlacedEffect.fx" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\HelixToolkit\HelixToolkit.csproj">
-      <Project>{7c0e987e-cc34-4b19-ba6b-b381aeabb530}</Project>
-      <Name>HelixToolkit</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
