@@ -794,6 +794,9 @@ namespace HelixToolkit.Wpf
             var orthographicCamera = camera as OrthographicCamera;
             if (orthographicCamera != null)
             {
+                //ZoomToRectangle(orthographicCamera, viewport, zoomRectangle);
+                //return;
+                
                 orthographicCamera.Width *= zoomRectangle.Width / viewport.ActualWidth;
                 var oldTarget = camera.Position + camera.LookDirection;
                 var distance = camera.LookDirection.Length;
