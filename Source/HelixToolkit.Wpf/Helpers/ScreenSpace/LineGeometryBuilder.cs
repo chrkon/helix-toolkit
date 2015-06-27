@@ -74,6 +74,9 @@ namespace HelixToolkit.Wpf
         /// <param name="clipping">
         /// The clipping.
         /// </param>
+        /// <param name="dashArray">
+        /// the dash definition, default = 1, dotted = 1 1
+        /// </param>
         /// <returns>
         /// The positions collection.
         /// </returns>
@@ -81,8 +84,10 @@ namespace HelixToolkit.Wpf
             IList<Point3D> points,
             double thickness = 1.0,
             double depthOffset = 0.0,
-            CohenSutherlandClipping clipping = null)
-        {
+            CohenSutherlandClipping clipping = null,
+            DoubleCollection dashArray = null)
+        {          
+
             var halfThickness = thickness * 0.5;
             var segmentCount = points.Count / 2;
 
@@ -135,14 +140,14 @@ namespace HelixToolkit.Wpf
                     // TODO: make a square with the thickness as side length
                     p00.X -= dz * p00.W;
                     p00.Y -= dz * p00.W;
-                    
+
                     p01.X -= dz * p01.W;
                     p01.Y += dz * p01.W;
-                    
+
                     p10.X += dz * p10.W;
                     p10.Y -= dz * p10.W;
-                    
-                    p11.X += dz * p11.W;                    
+
+                    p11.X += dz * p11.W;
                     p11.Y += dz * p11.W;
                 }
                 else
@@ -152,7 +157,7 @@ namespace HelixToolkit.Wpf
                     // the normal (dx,dy)
                     var dx = -ly * m;
                     var dy = lx * m;
-                    
+
                     // segment start points
                     p00.X += dx * p00.W;
                     p00.Y += dy * p00.W;
