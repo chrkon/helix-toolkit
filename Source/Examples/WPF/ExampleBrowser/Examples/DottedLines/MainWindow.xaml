@@ -1,0 +1,27 @@
+﻿<Window x:Class="DottedLinesDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:helix="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf" 
+        Title="dottedLinesDemo" Height="480" Width="640">
+    <TabControl>
+        <TabItem Header="LineVisual3D">
+            <helix:HelixViewport3D RotateAroundMouseDownPoint="True" ShowCoordinateSystem="True">
+                <helix:DefaultLights/>
+                <helix:LinesVisual3D Color="Red" Thickness="3" DashArray="3 2">
+                    <helix:LinesVisual3D.Points>
+                        <Point3DCollection>
+                            8,0,0 -8,1,0
+                        </Point3DCollection>
+                    </helix:LinesVisual3D.Points>
+                </helix:LinesVisual3D>
+                <helix:LinesVisual3D Color="Blue" Thickness="3" DashArray="3 3">
+                    <helix:LinesVisual3D.Points>
+                        <Point3DCollection>
+                            8,0,-5 -8,1,-5 
+                            8,0,-5 -8,-5,0
+                        </Point3DCollection>
+                    </helix:LinesVisual3D.Points>
+                </helix:LinesVisual3D>
+            </helix:HelixViewport3D>
+        </TabItem>
+    </TabControl>
+</Window>
