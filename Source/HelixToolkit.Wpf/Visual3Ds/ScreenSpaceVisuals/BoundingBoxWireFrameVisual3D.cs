@@ -53,7 +53,7 @@ namespace HelixToolkit.Wpf
                 return;
             }
 
-            var points = new Point3DCollection();
+            var points = new List<Point3D>();
 
             var bb = this.BoundingBox;
 
