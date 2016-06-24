@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Gitlink build step (#123)
 - HelixViewport3D.CursorPosition (#133)
+- FitView method on CameraHelper and HelixViewport3D (#264)
 
 ### Fixed
 - ScreenGeometryBuilder (#106)
@@ -22,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - Migrate automatic package restore (#189)
 - Threshold of Polygon3D.GetNormal() changed to 1e-10 (#246)
 - Disable hit testing on adorner layer (#250)
+- Frozen ScreenSpaceVisual3D.Points (#275)
 
 ## [2014.2.452] - 2014-12-16
 ### Added

@@ -1183,7 +1183,7 @@ namespace HelixToolkit.Wpf
 
             if (this.normals != null)
             {
-                var w = Vector3D.CrossProduct(p3 - p0, p1 - p0);
+                var w = Vector3D.CrossProduct(p1 - p0, p3 - p0);
                 w.Normalize();
                 this.normals.Add(w);
                 this.normals.Add(w);
@@ -1809,12 +1809,12 @@ namespace HelixToolkit.Wpf
                 throw new ArgumentNullException("fanPositions");
             }
 
-            if (this.normals != null && this.normals == null)
+            if (this.normals != null && fanNormals == null)
             {
                 throw new ArgumentNullException("fanNormals");
             }
 
-            if (this.textureCoordinates != null && this.textureCoordinates == null)
+            if (this.textureCoordinates != null && fanTextureCoordinates == null)
             {
                 throw new ArgumentNullException("fanTextureCoordinates");
             }
