@@ -21,6 +21,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "HelixToolkit.SharpDX.Assimp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreWpfTest", "Examples\SharpDX.Core\CoreWpfTest\CoreWpfTest.csproj", "{55DFC7AA-D57D-4537-BD70-75546E70DC80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreWpfSharpDX_SelectionCommands", "Examples\SharpDX.Core\CoreWpfSharpDX_SelectionCommands\CoreWpfSharpDX_SelectionCommands.csproj", "{3E280AB0-5862-461A-8809-5146011F0DF8}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		HelixToolkit.SharpDX.SharedModel\HelixToolkit.SharpDX.SharedModel.projitems*{1aefcb64-e997-425a-8c84-dc93263cc4a7}*SharedItemsImports = 13
@@ -55,6 +57,10 @@ Global
 		{55DFC7AA-D57D-4537-BD70-75546E70DC80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55DFC7AA-D57D-4537-BD70-75546E70DC80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55DFC7AA-D57D-4537-BD70-75546E70DC80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E280AB0-5862-461A-8809-5146011F0DF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E280AB0-5862-461A-8809-5146011F0DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E280AB0-5862-461A-8809-5146011F0DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E280AB0-5862-461A-8809-5146011F0DF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
