@@ -41,6 +41,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\RenderTechniqueConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\RenderUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ScreenDuplicationViewport3DX.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SelectionCommands\ModelsSelectedByPointEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SelectionCommands\ModelsSelectedByRectangleEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SelectionCommands\ModelsSelectedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SelectionCommands\PointSelectionCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SelectionCommands\RectangleSelectionCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SelectionCommands\SelectionCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SelectionCommands\SelectionHitMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SelectionCommands\VisualsSelectedByPointEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SelectionCommands\VisualsSelectedByRectangleEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SelectionCommands\VisualsSelectedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TargetSymbolAdorner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Trackball.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Viewport3DX.cs" />
