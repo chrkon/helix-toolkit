@@ -12,6 +12,7 @@ namespace ModelViewer
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
+    using System.Windows.Media;
     using System.Windows.Media.Media3D;
     using System.Windows.Threading;
 
@@ -22,7 +23,7 @@ namespace ModelViewer
     {
         private const string OpenFileFilter = "3D model files (*.3ds;*.obj;*.lwo;*.stl;*.ply;)|*.3ds;*.obj;*.objz;*.lwo;*.stl;*.ply;";
 
-        private const string TitleFormatString = "3D model viewer - {0}";
+        private const string TitleFormatString = "3D model viewer - {0} {1}";
 
         private readonly IFileDialogService fileDialogService;
 
@@ -54,6 +55,7 @@ namespace ModelViewer
             this.FileExitCommand = new DelegateCommand(FileExit);
             this.ViewZoomExtentsCommand = new DelegateCommand(this.ViewZoomExtents);
             this.EditCopyXamlCommand = new DelegateCommand(this.CopyXaml);
+            this.EditCopyBitmapCommand = new DelegateCommand(this.CopyBitmap);
             this.ApplicationTitle = "3D Model viewer";
             this.Elements = new List<VisualViewModel>();
             foreach (var c in viewport.Children)
@@ -135,6 +137,8 @@ namespace ModelViewer
 
         public ICommand EditCopyXamlCommand { get; set; }
 
+        public ICommand EditCopyBitmapCommand { get; set; }
+
         private static void FileExit()
         {
             Application.Current.Shutdown();
@@ -154,7 +158,31 @@ namespace ModelViewer
         private void CopyXaml()
         {
             var rd = XamlExporter.WrapInResourceDictionary(this.CurrentModel);
-            Clipboard.SetText(XamlHelper.GetXaml(rd));
+            try
+            {
+                Clipboard.Clear();
+                Clipboard.SetText(XamlHelper.GetXaml(rd));
+                this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath, "(stored as XAML into clipboard)");
+            }
+            catch (Exception)
+            {
+                this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath, "(storing in clipboard failed)");
+            }
+        }
+
+        private void CopyBitmap()
+        {
+            var bitmap = Viewport3DHelper.RenderBitmap(this.viewport.Viewport, new SolidColorBrush(Colors.White));
+            try
+            {
+                Clipboard.Clear();
+                Clipboard.SetImage(bitmap);
+                this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath,"(rendered as bitmap into clipboard)");
+            }
+            catch (Exception)
+            {
+                this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath, "(storing in clipboard failed)");
+            }
         }
 
         private void ViewZoomExtents()
@@ -166,7 +194,7 @@ namespace ModelViewer
         {
             this.CurrentModelPath = this.fileDialogService.OpenFileDialog("models", null, OpenFileFilter, ".3ds");
             this.CurrentModel = await this.LoadAsync(this.CurrentModelPath, true);
-            this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath);
+            this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath,string.Empty);
             this.viewport.ZoomExtents(0);
         }
 
