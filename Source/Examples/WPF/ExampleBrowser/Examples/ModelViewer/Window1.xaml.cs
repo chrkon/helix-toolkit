@@ -14,7 +14,7 @@ namespace ModelViewer
     /// <summary>
     /// Interaction logic for Window1.
     /// </summary>
-    [Example(null,"Model viewer.")]
+    [Example(null,"Model viewer")]
     public partial class Window1
     {
         /// <summary>
