@@ -8,6 +8,7 @@ namespace ModelViewer
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using System.Windows;
@@ -190,12 +191,17 @@ namespace ModelViewer
 
         private void CopyBitmapHiResolution()
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var bitmap = Viewport3DHelper.RenderBitmap(this.viewport.Viewport, 1920.0, 1080.0, new SolidColorBrush(Colors.White), 2);
             try
             {
                 Clipboard.Clear();
                 Clipboard.SetImage(bitmap);
-                this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath, "(rendered as HD bitmap into clipboard)");
+                stopwatch.Stop();
+
+                this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath, 
+                    $"(rendered as HD bitmap into clipboard in {stopwatch.ElapsedMilliseconds} ms)");
             }
             catch (Exception)
             {
