@@ -67,7 +67,8 @@
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Header="Copy _XAML" Command="{Binding EditCopyXamlCommand}"/>
-                <MenuItem Header="_Copy as Bitmap" Command="{Binding EditCopyBitmapCommand}"/>
+                <MenuItem Header="_Copy as Bitmap (original Size)" Command="{Binding EditCopyBitmapCommand}"/>
+                <MenuItem Header="_Copy as HiResolution Bitmap (1920x1080)" Command="{Binding EditCopyHiResBitmapCommand}"/>
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_Zoom extents" Command="{Binding ViewZoomExtentsCommand}"/>

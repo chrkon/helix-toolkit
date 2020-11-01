@@ -56,6 +56,7 @@ namespace ModelViewer
             this.ViewZoomExtentsCommand = new DelegateCommand(this.ViewZoomExtents);
             this.EditCopyXamlCommand = new DelegateCommand(this.CopyXaml);
             this.EditCopyBitmapCommand = new DelegateCommand(this.CopyBitmap);
+            this.EditCopyHiResBitmapCommand = new DelegateCommand(this.CopyBitmapHiResolution);
             this.ApplicationTitle = "3D Model viewer";
             this.Elements = new List<VisualViewModel>();
             foreach (var c in viewport.Children)
@@ -139,6 +140,8 @@ namespace ModelViewer
 
         public ICommand EditCopyBitmapCommand { get; set; }
 
+        public ICommand EditCopyHiResBitmapCommand { get; set; }
+
         private static void FileExit()
         {
             Application.Current.Shutdown();
@@ -178,6 +181,21 @@ namespace ModelViewer
                 Clipboard.Clear();
                 Clipboard.SetImage(bitmap);
                 this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath,"(rendered as bitmap into clipboard)");
+            }
+            catch (Exception)
+            {
+                this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath, "(storing in clipboard failed)");
+            }
+        }
+
+        private void CopyBitmapHiResolution()
+        {
+            var bitmap = Viewport3DHelper.RenderBitmap(this.viewport.Viewport, 1920.0, 1080.0, new SolidColorBrush(Colors.White), 2);
+            try
+            {
+                Clipboard.Clear();
+                Clipboard.SetImage(bitmap);
+                this.ApplicationTitle = string.Format(TitleFormatString, this.CurrentModelPath, "(rendered as HD bitmap into clipboard)");
             }
             catch (Exception)
             {
