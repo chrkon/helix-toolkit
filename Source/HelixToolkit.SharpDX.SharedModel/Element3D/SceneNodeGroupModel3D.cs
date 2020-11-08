@@ -25,17 +25,17 @@ namespace HelixToolkit.Wpf.SharpDX
         /// Adds a child node. <see cref="GroupNodeBase.AddChildNode(SceneNode)"/>
         /// </summary>
         /// <param name="node">The node.</param>
-        public void AddNode(SceneNode node)
+        public bool AddNode(SceneNode node)
         {
-            GroupNode.AddChildNode(node);
+            return GroupNode.AddChildNode(node);
         }
         /// <summary>
         /// Removes child node. <see cref="GroupNodeBase.RemoveChildNode(SceneNode)"/>
         /// </summary>
         /// <param name="node">The node.</param>
-        public void RemoveNode(SceneNode node)
+        public bool RemoveNode(SceneNode node)
         {
-            GroupNode.RemoveChildNode(node);
+            return GroupNode.RemoveChildNode(node);
         }
         /// <summary>
         /// Clears this group. <see cref="GroupNodeBase.Clear"/>
