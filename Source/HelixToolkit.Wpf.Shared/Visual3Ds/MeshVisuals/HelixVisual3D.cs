@@ -58,7 +58,7 @@ namespace HelixToolkit.Wpf
         /// Identifies the <see cref="Diameter"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty DiameterProperty = DependencyProperty.Register(
-            "Diameter", typeof(double), typeof(HelixVisual3D), new UIPropertyMetadata(0.5, GeometryChanged));
+            "Diameter", typeof(double), typeof(HelixVisual3D), new UIPropertyMetadata(1.0, GeometryChanged));
 
         /// <summary>
         /// Identifies the <see cref="Length"/> dependency property.
@@ -195,9 +195,9 @@ namespace HelixToolkit.Wpf
             double dr = this.Diameter / r;
             double p = this.Phase / 180 * Math.PI;
 
-            double x = r * Math.Cos((b * u) + p) * (2 + (dr * Math.Cos(v)));
-            double y = r * Math.Sin((b * u) + p) * (2 + (dr * Math.Cos(v)));
-            double z = (u * this.Length) + (d * Math.Sin(v));
+            double x = r * Math.Cos((b * u) + p) * (2 + (dr * Math.Cos(v) / 2.0));
+            double y = r * Math.Sin((b * u) + p) * (2 + (dr * Math.Cos(v) / 2.0));
+            double z = (u * this.Length) + (d * Math.Sin(v)) / 2.0;
 
             texCoord = new Point(color, 0);
             return this.Origin + new Vector3D(x, y, z);
