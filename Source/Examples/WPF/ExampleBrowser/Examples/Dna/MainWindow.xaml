@@ -41,9 +41,9 @@
                     <TranslateTransform3D OffsetZ="-15"/>
                 </ModelVisual3D.Transform>
 
-                <helix:HelixVisual3D Radius="2" Diameter="0.5" Turns="3" Length="30" Fill="{StaticResource RainbowBrush}"/>
-                <helix:HelixVisual3D Radius="2" Diameter="0.5" Turns="3" Length="30" Phase="180" Fill="{StaticResource RainbowBrush}"/>
-
+                <helix:HelixVisual3D Radius="5" Diameter="1" Turns="3" Length="30" Fill="{StaticResource RainbowBrush}"/>
+                <helix:HelixVisual3D Radius="5" Diameter="1" Turns="3" Length="30" Phase="180" Fill="{StaticResource RainbowBrush}"/>
+                <helix:GridLinesVisual3D MinorDistance="1.0" MajorDistance="5.0" />
             </ModelVisual3D>
 
         </helix:HelixViewport3D>
