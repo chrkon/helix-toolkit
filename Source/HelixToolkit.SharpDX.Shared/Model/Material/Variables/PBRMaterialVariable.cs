@@ -24,7 +24,7 @@ namespace HelixToolkit.UWP
         /// <summary>
         /// Physics based rendering material
         /// </summary>
-        public sealed class PBRMaterialVariable : MaterialVariable
+        public class PBRMaterialVariable : MaterialVariable
         {
             private const int NUMTEXTURES = 7;
             private const int NUMSAMPLERS = 4;
@@ -140,13 +140,15 @@ namespace HelixToolkit.UWP
 
                 WriteValue(PhongPBRMaterialStruct.RenderPBR, true); // Make sure to set this flag
                 AddPropertyBinding(nameof(PBRMaterialCore.EnableFlatShading), () => { WriteValue(PhongPBRMaterialStruct.RenderFlat, material.EnableFlatShading); });
+                AddPropertyBinding(nameof(PBRMaterialCore.VertexColorBlendingFactor), () => { WriteValue(PhongPBRMaterialStruct.VertColorBlending, material.VertexColorBlendingFactor); });
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private void CreateTextureView(TextureModel texture, int index)
             {
+                var newTexture = texture == null ? null : textureManager.Register(texture);
                 RemoveAndDispose(ref TextureResources[index]);
-                TextureResources[index] = texture == null ? null : Collect(textureManager.Register(texture));
+                TextureResources[index] = Collect(newTexture);
                 if (TextureResources[index] != null)
                 {
                     textureIndex |= 1u << index;
@@ -181,26 +183,28 @@ namespace HelixToolkit.UWP
 
             private void CreateSamplers()
             {
+                var newSurfaceSampler = statePoolManager.Register(material.SurfaceMapSampler);
+                var newIBLSampler = statePoolManager.Register(material.IBLSampler);
+                var newDisplaceSampler = statePoolManager.Register(material.DisplacementMapSampler);
+                var newShadowSampler = statePoolManager.Register(DefaultSamplers.ShadowSampler);
                 RemoveAndDispose(ref SamplerResources[SurfaceSamplerIdx]);
                 RemoveAndDispose(ref SamplerResources[IBLSamplerIdx]);
                 RemoveAndDispose(ref SamplerResources[DisplaceSamplerIdx]);
                 RemoveAndDispose(ref SamplerResources[ShadowSamplerIdx]);
                 if (material != null)
                 {
-                    SamplerResources[SurfaceSamplerIdx] = Collect(statePoolManager.Register(material.SurfaceMapSampler));
-                    SamplerResources[IBLSamplerIdx] = Collect(statePoolManager.Register(material.IBLSampler));
-                    SamplerResources[DisplaceSamplerIdx] = Collect(statePoolManager.Register(material.DisplacementMapSampler));
-                    SamplerResources[ShadowSamplerIdx] = Collect(statePoolManager.Register(DefaultSamplers.ShadowSampler));
+                    SamplerResources[SurfaceSamplerIdx] = Collect(newSurfaceSampler);
+                    SamplerResources[IBLSamplerIdx] = Collect(newIBLSampler);
+                    SamplerResources[DisplaceSamplerIdx] = Collect(newDisplaceSampler);
+                    SamplerResources[ShadowSamplerIdx] = Collect(newShadowSampler);
                 }
             }
 
             private void CreateSampler(SamplerStateDescription desc, int index)
             {
+                var newRes = statePoolManager.Register(desc);
                 RemoveAndDispose(ref SamplerResources[index]);
-                if (material != null)
-                {
-                    SamplerResources[index] = Collect(statePoolManager.Register(desc));
-                }
+                SamplerResources[index] = Collect(newRes);
             }
 
             public override bool BindMaterialResources(RenderContext context, DeviceContextProxy deviceContext, ShaderPass shaderPass)

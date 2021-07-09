@@ -401,6 +401,11 @@ namespace HelixToolkit.Wpf.SharpDX
                 {
                     if (view.RenderHost != null && view.RenderHost.IsRendering)
                     {
+                        if (view.EnableSwapChainRendering)
+                        {
+                            view.RenderHost.UpdateAndRender();
+                            // be sure to render the Scene before capture, otherwise the image is just black
+                        }
                         ScreenCapture.SaveWICTextureToBitmapStream(view.RenderHost.EffectsManager, view.RenderHost.RenderBuffer.BackBuffer.Resource as Texture2D, memoryStream);
                         var bitmap = new BitmapImage();
                         bitmap.BeginInit();
@@ -426,11 +431,11 @@ namespace HelixToolkit.Wpf.SharpDX
         public static BitmapSource RenderBitmap(
             this Viewport3DX view, int width, int height)
         {
-            var w = (int)view.Width;
-            var h = (int)view.Height;
-            ResizeAndArrange(view, width, height);
+            var w = view.RenderHost.ActualWidth;
+            var h = view.RenderHost.ActualHeight;
+            view.RenderHost.Resize(width, height);
             var rtb = RenderBitmap(view);
-            ResizeAndArrange(view, w, h);
+            view.RenderHost.Resize((int)w, (int)h);
             return rtb;
         }
 
@@ -453,7 +458,7 @@ namespace HelixToolkit.Wpf.SharpDX
             if (view.RenderHost == null || !view.RenderHost.IsRendering)
             {
                 return;
-            }            
+            }
             view.Measure(new Size(width, height));
             view.Arrange(new Rect(0, 0, width, height));
             view.RenderHost.Resize(width, height);
@@ -523,8 +528,7 @@ namespace HelixToolkit.Wpf.SharpDX
             {
                 return;
             }
-
-            ZoomExtents(viewport, new Rect3D(bounds.Minimum.ToPoint3D(), (bounds.Maximum - bounds.Minimum).ToSize3D()), animationTime);
+            viewport.Camera.ZoomExtents(viewport, new Rect3D(bounds.Minimum.ToPoint3D(), (bounds.Maximum - bounds.Minimum).ToSize3D()), animationTime);
         }
 
         /// <summary>
@@ -535,10 +539,7 @@ namespace HelixToolkit.Wpf.SharpDX
         /// <param name="animationTime">The animation time.</param>
         public static void ZoomExtents(this Viewport3DX viewport, Rect3D bounds, double animationTime = 0)
         {
-            var diagonal = new Vector3D(bounds.SizeX, bounds.SizeY, bounds.SizeZ);
-            var center = bounds.Location + (diagonal * 0.5);
-            double radius = diagonal.Length * 0.5;
-            ZoomExtents(viewport, center, radius, animationTime);
+            viewport.Camera.ZoomExtents(viewport, bounds, animationTime);
         }
 
         /// <summary>
@@ -550,30 +551,7 @@ namespace HelixToolkit.Wpf.SharpDX
         /// <param name="animationTime">The animation time.</param>
         public static void ZoomExtents(this Viewport3DX viewport, Point3D center, double radius, double animationTime = 0)
         {
-            var camera = viewport.Camera;
-            if (camera is PerspectiveCamera pcam)
-            {
-                double disth = radius / Math.Tan(0.5 * pcam.FieldOfView * Math.PI / 180);
-                double vfov = pcam.FieldOfView / viewport.ActualWidth * viewport.ActualHeight;
-                double distv = radius / Math.Tan(0.5 * vfov * Math.PI / 180);
-
-                double dist = Math.Max(disth, distv);
-                var dir = pcam.LookDirection;
-                dir.Normalize();
-                pcam.LookAt(center, dir * dist, animationTime);
-            }
-            else if (camera is OrthographicCamera ocam)
-            {
-                ocam.LookAt(center, ocam.LookDirection, animationTime);
-                double newWidth = radius * 2;
-
-                if (viewport.ActualWidth > viewport.ActualHeight)
-                {
-                    newWidth = radius * 2 * viewport.ActualWidth / viewport.ActualHeight;
-                }
-
-                ocam.AnimateWidth(newWidth, animationTime);
-            }
+            viewport.Camera.ZoomExtents(viewport, center, radius, animationTime);
         }
 
         /// <summary>

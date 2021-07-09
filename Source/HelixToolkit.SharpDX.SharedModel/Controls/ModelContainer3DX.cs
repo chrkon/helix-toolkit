@@ -95,6 +95,8 @@ namespace HelixToolkit.Wpf.SharpDX
         /// Occurs when each render frame finished rendering.
         /// </summary>
         public event EventHandler Rendered;
+
+        public event EventHandler SceneGraphUpdated;
 #pragma warning restore 0067
         /// <summary>
         /// Gets the unique identifier.
@@ -144,6 +146,11 @@ namespace HelixToolkit.Wpf.SharpDX
 
         public new float ActualWidth { get => 0; }
         public new float ActualHeight { get => 0; }
+
+        public float DpiScale
+        {
+            set; get;
+        } = 1;
 
         /// <summary>
         /// Gets the current frame renderables for rendering.

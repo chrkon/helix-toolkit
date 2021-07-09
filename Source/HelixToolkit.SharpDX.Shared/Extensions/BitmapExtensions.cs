@@ -39,13 +39,13 @@ namespace HelixToolkit.UWP
                 var metrices = layout.Metrics;
                 if (!predefinedSize)
                 {
-                    width = (float)Math.Ceiling(metrices.WidthIncludingTrailingWhitespace + padding.X + padding.W);
-                    height = (float)Math.Ceiling(metrices.Height + padding.Y + padding.Z);
+                    width = (float)Math.Ceiling(metrices.WidthIncludingTrailingWhitespace + padding.X + padding.Z);
+                    height = (float)Math.Ceiling(metrices.Height + padding.Y + padding.W);
                 }
                 else
                 {
                     var scale = width / height;
-                    width = (float)Math.Ceiling(metrices.WidthIncludingTrailingWhitespace + padding.X + padding.W);
+                    width = (float)Math.Ceiling(metrices.WidthIncludingTrailingWhitespace + padding.X + padding.Z);
                     height = width / scale;
                 }
 
@@ -96,6 +96,11 @@ namespace HelixToolkit.UWP
 
         public static global::SharpDX.WIC.Bitmap CreateBitmapStream(IDevice2DResources deviceResources, int width, int height, Direct2DImageFormat imageType, Action<RenderTarget> drawingAction)
         {
+            if (width <= 0 || height <= 0)
+            {
+                return null;
+            }
+
             var bitmap = new global::SharpDX.WIC.Bitmap(deviceResources.WICImgFactory, width, height, global::SharpDX.WIC.PixelFormat.Format32bppBGR,
                 BitmapCreateCacheOption.CacheOnDemand);
             using (var target = new WicRenderTarget(deviceResources.Factory2D, bitmap,
@@ -120,6 +125,11 @@ namespace HelixToolkit.UWP
             IDevice2DResources deviceResources,
             Direct2DImageFormat imageType = Direct2DImageFormat.Bmp)
         {
+            if (bitmap == null)
+            {
+                return null;
+            }
+
             var systemStream = new MemoryStream();
 
             using (var stream = new WICStream(deviceResources.WICImgFactory, systemStream))
@@ -281,7 +291,8 @@ namespace HelixToolkit.UWP
                                  Height = rect.Height,
                                  Position = x.Origin,
                                  UV_TopLeft = new Vector2(rect.Left / imageWidth, rect.Top / imageHeight),
-                                 UV_BottomRight = new Vector2(rect.Right / imageWidth, rect.Bottom / imageHeight)
+                                 UV_BottomRight = new Vector2(rect.Right / imageWidth, rect.Bottom / imageHeight),
+                                 HorizontalAlignment = x.HorizontalAlignment, VerticalAlignment = x.VerticalAlignment
                              };
                          }))
                         {

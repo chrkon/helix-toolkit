@@ -213,8 +213,8 @@ namespace HelixToolkit.Wpf.SharpDX
             translationY.Mouse3DUp += Manipulation_Mouse3DUp;
             translationZ.Mouse3DUp += Manipulation_Mouse3DUp;
 #else
-            translationY.Transform3D = rotationYMatrix;
-            translationZ.Transform3D = rotationZMatrix;
+            translationY.HxTransform3D = rotationYMatrix;
+            translationZ.HxTransform3D = rotationZMatrix;
             translationX.OnMouse3DDown += Translation_Mouse3DDown;
             translationY.OnMouse3DDown += Translation_Mouse3DDown;
             translationZ.OnMouse3DDown += Translation_Mouse3DDown;
@@ -249,8 +249,8 @@ namespace HelixToolkit.Wpf.SharpDX
             rotationY.Mouse3DUp += Manipulation_Mouse3DUp;
             rotationZ.Mouse3DUp += Manipulation_Mouse3DUp;
 #else
-            rotationY.Transform3D = rotationYMatrix;
-            rotationZ.Transform3D = rotationZMatrix;
+            rotationY.HxTransform3D = rotationYMatrix;
+            rotationZ.HxTransform3D = rotationZMatrix;
             rotationX.OnMouse3DDown += Rotation_Mouse3DDown;
             rotationY.OnMouse3DDown += Rotation_Mouse3DDown;
             rotationZ.OnMouse3DDown += Rotation_Mouse3DDown;
@@ -285,8 +285,8 @@ namespace HelixToolkit.Wpf.SharpDX
             scaleY.Mouse3DUp += Manipulation_Mouse3DUp;
             scaleZ.Mouse3DUp += Manipulation_Mouse3DUp;
 #else
-            scaleY.Transform3D = rotationYMatrix;
-            scaleZ.Transform3D = rotationZMatrix;
+            scaleY.HxTransform3D = rotationYMatrix;
+            scaleZ.HxTransform3D = rotationZMatrix;
             scaleX.OnMouse3DDown += Scaling_Mouse3DDown;
             scaleY.OnMouse3DDown += Scaling_Mouse3DDown;
             scaleZ.OnMouse3DDown += Scaling_Mouse3DDown;
@@ -648,7 +648,7 @@ namespace HelixToolkit.Wpf.SharpDX
 #if !NETFX_CORE
             target.Transform = new Media3D.MatrixTransform3D(targetMatrix.ToMatrix3D());
 #else
-            target.Transform3D = targetMatrix;
+            target.HxTransform3D = targetMatrix;
 #endif
         }
 
@@ -659,7 +659,7 @@ namespace HelixToolkit.Wpf.SharpDX
 #if !NETFX_CORE
             ctrlGroup.Transform = new Media3D.MatrixTransform3D(m.ToMatrix3D());
 #else
-            ctrlGroup.Transform3D = m;
+            ctrlGroup.HxTransform3D = m;
 #endif
         }
 
@@ -690,10 +690,10 @@ namespace HelixToolkit.Wpf.SharpDX
                 models.Add(manipulator.scaleZ);
                 return base.OnAttach(host);
             }
-            protected override bool OnHitTest(RenderContext context, Matrix totalModelMatrix, ref Ray ray, ref List<HitTestResult> hits)
+            protected override bool OnHitTest(HitTestContext context, Matrix totalModelMatrix, ref List<HitTestResult> hits)
             {
                 //Set hit distance to 0 so event manipulator is inside the model, hit test still works
-                if (base.OnHitTest(context, totalModelMatrix, ref ray, ref hits))
+                if (base.OnHitTest(context, totalModelMatrix, ref hits))
                 {
                     if (hits.Count > 0)
                     {

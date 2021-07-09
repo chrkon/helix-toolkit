@@ -77,6 +77,13 @@ namespace HelixToolkit.Wpf.SharpDX
                     ((d as Element3DCore).SceneNode as ScreenSpacedNode).Mode = (ScreenSpacedMode)e.NewValue;
                 }));
 
+        // Using a DependencyProperty as the backing store for CameraType.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CameraTypeProperty =
+            DependencyProperty.Register("CameraType", typeof(ScreenSpacedCameraType), typeof(ScreenSpacedElement3D), new PropertyMetadata(ScreenSpacedCameraType.Auto,
+                (d, e) =>
+                {
+                    ((d as Element3DCore).SceneNode as ScreenSpacedNode).CameraType = (ScreenSpacedCameraType)e.NewValue;
+                }));
 
         /// <summary>
         /// The absolute position3 d property
@@ -89,6 +96,18 @@ namespace HelixToolkit.Wpf.SharpDX
 #else
                 ((d as Element3DCore).SceneNode as ScreenSpacedNode).AbsolutePosition3D = ((Point3D)e.NewValue).ToVector3();
 #endif
+            }));
+
+        public static readonly DependencyProperty FarPlaneDistanceProperty =
+            DependencyProperty.Register("FarPlaneDistance", typeof(double), typeof(ScreenSpacedElement3D), new PropertyMetadata(1e3, (d, e) => 
+            {
+                ((d as Element3DCore).SceneNode as ScreenSpacedNode).FarPlane = (float)e.NewValue;
+            }));
+
+        public static readonly DependencyProperty NearPlaneDistanceProperty =
+            DependencyProperty.Register("NearPlaneDistance", typeof(double), typeof(ScreenSpacedElement3D), new PropertyMetadata(1e-2, (d, e) => 
+            {
+                ((d as Element3DCore).SceneNode as ScreenSpacedNode).NearPlane = (float)e.NewValue;
             }));
 
         /// <summary>
@@ -146,6 +165,25 @@ namespace HelixToolkit.Wpf.SharpDX
             get { return (ScreenSpacedMode)GetValue(ModeProperty); }
             set { SetValue(ModeProperty, value); }
         }
+
+        /// <summary>
+        /// Only being used when <see cref="Mode"/> is RelativeScreenSpaced
+        /// </summary>
+        /// <value>
+        /// The type of the camera.
+        /// </value>
+        public ScreenSpacedCameraType CameraType
+        {
+            get
+            {
+                return (ScreenSpacedCameraType)GetValue(CameraTypeProperty);
+            }
+            set
+            {
+                SetValue(CameraTypeProperty, value);
+            }
+        }
+
         /// <summary>
         /// Gets or sets the absolute position in 3d. Use by <see cref="Mode"/> = <see cref="ScreenSpacedMode.AbsolutePosition3D"/>
         /// </summary>
@@ -156,6 +194,40 @@ namespace HelixToolkit.Wpf.SharpDX
         {
             get { return (Point3D)GetValue(AbsolutePosition3DProperty); }
             set { SetValue(AbsolutePosition3DProperty, value); }
+        }
+        /// <summary>
+        /// Gets or sets the far plane distance.
+        /// </summary>
+        /// <value>
+        /// The far plane distance.
+        /// </value>
+        public double FarPlaneDistance
+        {
+            get
+            {
+                return (double)GetValue(FarPlaneDistanceProperty);
+            }
+            set
+            {
+                SetValue(FarPlaneDistanceProperty, value);
+            }
+        }
+        /// <summary>
+        /// Gets or sets the near plane distance.
+        /// </summary>
+        /// <value>
+        /// The near plane distance.
+        /// </value>
+        public double NearPlaneDistance
+        {
+            get
+            {
+                return (double)GetValue(NearPlaneDistanceProperty);
+            }
+            set
+            {
+                SetValue(NearPlaneDistanceProperty, value);
+            }
         }
 
         protected override void AssignDefaultValuesToSceneNode(SceneNode node)

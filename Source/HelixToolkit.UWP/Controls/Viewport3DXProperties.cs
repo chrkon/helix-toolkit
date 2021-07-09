@@ -260,6 +260,24 @@ namespace HelixToolkit.UWP
                 "CoordinateSystemLabelZ", typeof(string), typeof(Viewport3DX), new PropertyMetadata("Z"));
 
         /// <summary>
+        /// The coordinate system color X property
+        /// </summary>
+        public static readonly DependencyProperty CoordinateSystemAxisXColorProperty = DependencyProperty.Register(
+                "CoordinateSystemAxisXColor", typeof(Color), typeof(Viewport3DX), new PropertyMetadata(Colors.Red));
+
+        /// <summary>
+        /// The coordinate system Color Y property
+        /// </summary>
+        public static readonly DependencyProperty CoordinateSystemAxisYColorProperty = DependencyProperty.Register(
+                "CoordinateSystemAxisYColor", typeof(Color), typeof(Viewport3DX), new PropertyMetadata(Colors.Green));
+
+        /// <summary>
+        /// The coordinate system Color Z property
+        /// </summary>
+        public static readonly DependencyProperty CoordinateSystemAxisZColorProperty = DependencyProperty.Register(
+                "CoordinateSystemAxisZColor", typeof(Color), typeof(Viewport3DX), new PropertyMetadata(Colors.Blue));
+
+        /// <summary>
         /// The coordinate system vertical position property. Relative to viewport center.
         /// <para>Default: -0.8</para>
         /// </summary>
@@ -368,6 +386,63 @@ namespace HelixToolkit.UWP
             set
             {
                 this.SetValue(CoordinateSystemLabelZProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the coordinate system color X.
+        /// </summary>
+        /// <value>
+        /// The coordinate system color X.
+        /// </value>
+        public Color CoordinateSystemAxisXColor
+        {
+            get
+            {
+                return (Color)this.GetValue(CoordinateSystemAxisXColorProperty);
+            }
+
+            set
+            {
+                this.SetValue(CoordinateSystemAxisXColorProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the coordinate system color Y.
+        /// </summary>
+        /// <value>
+        /// The coordinate system color T.
+        /// </value>
+        public Color CoordinateSystemAxisYColor
+        {
+            get
+            {
+                return (Color)this.GetValue(CoordinateSystemAxisYColorProperty);
+            }
+
+            set
+            {
+                this.SetValue(CoordinateSystemAxisYColorProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the coordinate system color Z.
+        /// </summary>
+        /// <value>
+        /// The coordinate system color Z.
+        /// </value>
+        public Color CoordinateSystemAxisZColor
+        {
+            get
+            {
+                return (Color)this.GetValue(CoordinateSystemAxisZColorProperty);
+            }
+
+            set
+            {
+                this.SetValue(CoordinateSystemAxisZColorProperty, value);
             }
         }
 
@@ -2378,5 +2453,38 @@ namespace HelixToolkit.UWP
                     viewport.renderHostInternal.RenderConfiguration.MinimumUpdateCount = (uint)Math.Max(0, (int)e.NewValue);
                 }
             }));
+
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [enable high dpi rendering].
+        /// Enable this option if you want to render high definition image with using high definition monitor and using dpi scaling in windows.
+        /// This option may impact rendering performance due to higher resolution.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [enable high dpi rendering]; otherwise, <c>false</c>.
+        /// </value>
+        public bool EnableDpiScale
+        {
+            get
+            {
+                return (bool)GetValue(EnableDpiScaleProperty);
+            }
+            set
+            {
+                SetValue(EnableDpiScaleProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty EnableDpiScaleProperty =
+            DependencyProperty.Register("EnableDpiScale", typeof(bool), typeof(Viewport3DX), new PropertyMetadata(true, (d, e)=> 
+            {
+                var viewport = (d as Viewport3DX);
+                if (viewport.hostPresenter != null && viewport.hostPresenter.Content is SwapChainRenderHost host)
+                {
+                    host.EnableDpiScale = (bool)e.NewValue;
+                }
+            }));
+
+
     }
 }

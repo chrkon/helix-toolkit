@@ -221,6 +221,60 @@ namespace HelixToolkit.UWP
             }
         }
 
+        private BillboardHorizontalAlignment horizontalAlignment = BillboardHorizontalAlignment.Center;
+        /// <summary>
+        /// Sets or gets the horizontal alignment. Default = <see cref="BillboardHorizontalAlignment.Center"/>
+        /// <para>
+        /// For example, when sets horizontal and vertical alignment to top/left,
+        /// billboard's bottom/right point will be anchored at the billboard origin.
+        /// </para>
+        /// </summary>
+        /// <value>
+        /// The horizontal alignment.
+        /// </value>
+        public BillboardHorizontalAlignment HorizontalAlignment
+        {
+            set
+            {
+                if (horizontalAlignment != value)
+                {
+                    horizontalAlignment = value;
+                    IsInitialized = false;
+                }
+            }
+            get
+            {
+                return horizontalAlignment;
+            }
+        }
+
+        private BillboardVerticalAlignment verticalAlignment = BillboardVerticalAlignment.Center;
+        /// <summary>
+        /// Sets or gets the vertical alignment. Default = <see cref="BillboardVerticalAlignment.Center"/>
+        /// <para>
+        /// For example, when sets horizontal and vertical alignment to top/left,
+        /// billboard's bottom/right point will be anchored at the billboard origin.
+        /// </para>
+        /// </summary>
+        /// <value>
+        /// The vertical alignment.
+        /// </value>
+        public BillboardVerticalAlignment VerticalAlignment
+        {
+            set
+            {
+                if (verticalAlignment != value)
+                {
+                    verticalAlignment = value;
+                    IsInitialized = false;
+                }
+            }
+            get
+            {
+                return verticalAlignment;
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BillboardSingleText3D"/> class.
         /// </summary>
@@ -309,9 +363,7 @@ namespace HelixToolkit.UWP
 
         private void DrawCharacter(string text, Vector3 origin, float w, float h, TextInfo info)
         {
-            // CCW from bottom left 
-            var tl = new Vector2(-w / 2, h / 2);
-            var br = new Vector2(w / 2, -h / 2);
+            GetQuadOffset(w, h, HorizontalAlignment, VerticalAlignment, out var tl, out var br);
 
             var uv_tl = new Vector2(0, 0);
             var uv_br = new Vector2(1, 1);
@@ -334,27 +386,19 @@ namespace HelixToolkit.UWP
             });
         }
 
-        /// <summary>
-        /// Hits the test.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <param name="modelMatrix">The model matrix.</param>
-        /// <param name="rayWS">The ray ws.</param>
-        /// <param name="hits">The hits.</param>
-        /// <param name="originalSource">The original source.</param>
-        /// <param name="fixedSize">if set to <c>true</c> [fixed size].</param>
-        /// <returns></returns>
-        public override bool HitTest(RenderContext context, Matrix modelMatrix,
-            ref Ray rayWS, ref List<HitTestResult> hits,
+
+        public override bool HitTest(HitTestContext context, Matrix modelMatrix, ref List<HitTestResult> hits,
             object originalSource, bool fixedSize)
         {
-            if (!IsInitialized || context == null || Width == 0 || Height == 0 || (!fixedSize && !BoundingSphere.TransformBoundingSphere(modelMatrix).Intersects(ref rayWS)))
+            var rayWS = context.RayWS;
+            if (!IsInitialized || context == null || Width == 0 || Height == 0 
+                || (!fixedSize && !BoundingSphere.TransformBoundingSphere(modelMatrix).Intersects(ref rayWS)))
             {
                 return false;
             }
 
-            return fixedSize ? HitTestFixedSize(context, ref modelMatrix, ref rayWS, ref hits, originalSource, BillboardVertices.Count)
-                : HitTestNonFixedSize(context, ref modelMatrix, ref rayWS, ref hits, originalSource, BillboardVertices.Count);
+            return fixedSize ? HitTestFixedSize(context, ref modelMatrix, ref hits, originalSource, BillboardVertices.Count)
+                : HitTestNonFixedSize(context, ref modelMatrix, ref hits, originalSource, BillboardVertices.Count);
         }
 
         protected override void AssignResultAdditional(BillboardHitResult result, int index)

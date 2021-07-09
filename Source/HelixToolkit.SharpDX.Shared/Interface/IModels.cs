@@ -64,6 +64,14 @@ namespace HelixToolkit.UWP
         /// The height.
         /// </value>
         float Height { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this billboard internal is initialized.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is initialized; otherwise, <c>false</c>.
+        /// </value>
+        bool IsInitialized { get; }
     }
 
     /// <summary>
@@ -73,6 +81,24 @@ namespace HelixToolkit.UWP
     public enum BillboardType
     {
         SingleText = 1, MultipleText = 2, Image = 4
+    }
+    /// <summary>
+    /// Shows billboard horizontally relative to the origin.
+    /// </summary>
+    public enum BillboardHorizontalAlignment
+    {
+        Center,
+        Left,
+        Right
+    }
+    /// <summary>
+    /// Shows billboard vertically relative to the origin.
+    /// </summary>
+    public enum BillboardVerticalAlignment
+    {
+        Center,
+        Top,
+        Bottom
     }
     /// <summary>
     /// 

@@ -83,13 +83,15 @@ namespace HelixToolkit.UWP
             /// <param name="model">The model.</param>
             /// <param name="geometry"></param>
             /// <param name="modelMatrix">The model matrix.</param>
-            /// <param name="rayWS">The ray ws.</param>
             /// <param name="rayModel">The ray model.</param>
+            /// <param name="returnMultiple"></param>
             /// <param name="hits">The hits.</param>
             /// <param name="isIntersect">if set to <c>true</c> [is intersect].</param>
             /// <param name="hitThickness">The hit thickness.</param>
             /// <returns></returns>
-            protected override bool HitTestCurrentNodeExcludeChild(ref Octant octant, RenderContext context, object model, Geometry3D geometry, Matrix modelMatrix, ref Ray rayWS, ref Ray rayModel, ref List<HitTestResult> hits, ref bool isIntersect, float hitThickness)
+            protected override bool HitTestCurrentNodeExcludeChild(ref Octant octant, HitTestContext context, object model,
+                Geometry3D geometry, Matrix modelMatrix, ref Ray rayModel, bool returnMultiple,
+                ref List<HitTestResult> hits, ref bool isIntersect, float hitThickness)
             {
                 isIntersect = false;
                 if (!octant.IsBuilt)
@@ -98,6 +100,7 @@ namespace HelixToolkit.UWP
                 }
                 bool isHit = false;
                 var bound = octant.Bound.Transform(modelMatrix);
+                var rayWS = context.RayWS;
                 if (rayWS.Intersects(ref bound))
                 {
                     isIntersect = true;
@@ -126,7 +129,7 @@ namespace HelixToolkit.UWP
             /// <param name="points">The points.</param>
             /// <param name="isIntersect">if set to <c>true</c> [is intersect].</param>
             /// <returns></returns>
-            protected override bool FindNearestPointBySphereExcludeChild(ref Octant octant, RenderContext context, ref BoundingSphere sphere, ref List<HitTestResult> points, ref bool isIntersect)
+            protected override bool FindNearestPointBySphereExcludeChild(ref Octant octant, HitTestContext context, ref BoundingSphere sphere, ref List<HitTestResult> points, ref bool isIntersect)
             {
                 return false;
             }
@@ -195,11 +198,14 @@ namespace HelixToolkit.UWP
             /// <param name="modelMatrix">The model matrix.</param>
             /// <param name="rayWS">The ray ws.</param>
             /// <param name="rayModel">The ray model.</param>
+            /// <param name="returnMultiple"></param>
             /// <param name="hits">The hits.</param>
             /// <param name="isIntersect">if set to <c>true</c> [is intersect].</param>
             /// <param name="hitThickness">The hit thickness.</param>
             /// <returns></returns>
-            protected override bool HitTestCurrentNodeExcludeChild(ref Octant octant, RenderContext context, object model, Geometry3D geometry, Matrix modelMatrix, ref Ray rayWS, ref Ray rayModel, ref List<HitTestResult> hits, ref bool isIntersect, float hitThickness)
+            protected override bool HitTestCurrentNodeExcludeChild(ref Octant octant, HitTestContext context, 
+                object model, Geometry3D geometry, Matrix modelMatrix, ref Ray rayModel, bool returnMultiple,
+                ref List<HitTestResult> hits, ref bool isIntersect, float hitThickness)
             {
                 isIntersect = false;
                 if (!octant.IsBuilt)
@@ -208,6 +214,7 @@ namespace HelixToolkit.UWP
                 }
                 bool isHit = false;
                 var bound = octant.Bound.Transform(modelMatrix);
+                var rayWS = context.RayWS;
                 if (rayWS.Intersects(ref bound))
                 {
                     isIntersect = true;
@@ -219,7 +226,7 @@ namespace HelixToolkit.UWP
                             var geo = Geometries[Objects[i].Key];
                             if(geo.Geometry is MeshGeometry3D mesh)
                             {
-                                isHit |= mesh.HitTest(context, geo.ModelTransform * modelMatrix, ref rayWS, ref hits, model);
+                                isHit |= mesh.HitTest(context, geo.ModelTransform * modelMatrix, ref hits, model);
                             }
                         }
                     }
@@ -235,7 +242,7 @@ namespace HelixToolkit.UWP
             /// <param name="points">The points.</param>
             /// <param name="isIntersect">if set to <c>true</c> [is intersect].</param>
             /// <returns></returns>
-            protected override bool FindNearestPointBySphereExcludeChild(ref Octant octant, RenderContext context, ref BoundingSphere sphere, ref List<HitTestResult> points, ref bool isIntersect)
+            protected override bool FindNearestPointBySphereExcludeChild(ref Octant octant, HitTestContext context, ref BoundingSphere sphere, ref List<HitTestResult> points, ref bool isIntersect)
             {
                 return false;
             }

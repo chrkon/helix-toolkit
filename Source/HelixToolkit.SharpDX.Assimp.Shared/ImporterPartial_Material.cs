@@ -25,7 +25,7 @@ namespace HelixToolkit.UWP
     using Model;
     using System.Collections.Generic;
     using System.Threading;
-
+    using Utilities;
     namespace Assimp
     {
         public partial class Importer
@@ -41,10 +41,10 @@ namespace HelixToolkit.UWP
             {
                 var phong = new PhongMaterialCore
                 {
-                    AmbientColor = material.ColorAmbient.ToSharpDXColor4(),
-                    DiffuseColor = material.ColorDiffuse.ToSharpDXColor4(),
-                    SpecularColor = material.ColorSpecular.ToSharpDXColor4(),
-                    EmissiveColor = material.HasColorEmissive ? material.ColorEmissive.ToSharpDXColor4() : Color.Black,
+                    AmbientColor = (material.HasColorAmbient && !configuration.IgnoreAmbientColor) ? material.ColorAmbient.ToSharpDXColor4() : Color.Black,
+                    DiffuseColor = material.HasColorDiffuse ? material.ColorDiffuse.ToSharpDXColor4() : Color.White,
+                    SpecularColor = material.HasColorSpecular ? material.ColorSpecular.ToSharpDXColor4() : Color.Black,
+                    EmissiveColor = (material.HasColorEmissive && !configuration.IgnoreEmissiveColor) ? material.ColorEmissive.ToSharpDXColor4() : Color.Black,
                     ReflectiveColor = material.HasColorReflective
                         ? material.ColorReflective.ToSharpDXColor4()
                         : Color.Black,
@@ -363,8 +363,9 @@ namespace HelixToolkit.UWP
                         Log(HelixToolkit.Logger.LogLevel.Information, $"Compressed Texture Format not supported. Format: {texture.CompressedFormatHint}");
                         return null;
                     }
-                    var stream = new MemoryStream(texture.CompressedData);
-                    return stream;
+                    var data = texture.CompressedData.ToArray();
+                    var stream = new MemoryStream(data);
+                    return new TextureModel(stream);
                 }
                 else if (texture.HasNonCompressedData)
                 {
@@ -386,20 +387,34 @@ namespace HelixToolkit.UWP
                     return s;
                 }
 
-                var texture = OnLoadTexture(texturePath);
+                var texture = OnLoadTexture(texturePath, out var actualPath);
                 if (texture != null)
-                    textureDict.TryAdd(texturePath, texture);
+                {
+                    if (!string.IsNullOrEmpty(actualPath))
+                    {                    
+                        // If texture is a separate file, uses file path as key and recheck whether exists
+                        if (!textureDict.TryAdd(actualPath, texture))
+                        {
+                            texture = textureDict[actualPath];
+                        }
+                    }
+                    else
+                    {
+                        textureDict.TryAdd(texturePath, texture);
+                    }
+                }
                 return texture;
             }
 
-            protected virtual TextureModel OnLoadTexture(string texturePath)
+            protected virtual TextureModel OnLoadTexture(string texturePath, out string actualPath)
             {
+                actualPath = texturePath;
                 try
                 {
                     //Check if is embedded material
                     if (texturePath.StartsWith("*") && int.TryParse(texturePath.Substring(1, texturePath.Length - 1), out int idx)
                         && embeddedTextures.Count > idx)
-                    {
+                    {                       
                         return OnLoadEmbeddedTexture(embeddedTextures[idx]);
                     }
                     else
@@ -408,9 +423,15 @@ namespace HelixToolkit.UWP
                         if (string.IsNullOrEmpty(ext) || !SupportedTextureFormats.Contains(ext.TrimStart('.').ToLowerInvariant()))
                         {
                             Log(HelixToolkit.Logger.LogLevel.Warning, $"Load Texture Failed. Texture Format not supported = {ext}.");
+
                             return null;
                         }
-                        return configuration?.TextureLoader?.Load(path, texturePath, Logger);
+                        actualPath = configuration?.TexturePathResolver?.Resolve(path, texturePath, Logger);
+                        if (string.IsNullOrEmpty(actualPath))
+                        {
+                            return null;
+                        }
+                        return new TextureModel(actualPath);
                     }
                 }
                 catch (Exception ex)

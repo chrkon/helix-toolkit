@@ -168,6 +168,16 @@ namespace HelixToolkit.UWP
         /// The actual width.
         /// </value>
         float ActualWidth { get; }
+        /// <summary>
+        /// Gets or sets the dpi scale.
+        /// </summary>
+        /// <value>
+        /// The dpi scale.
+        /// </value>
+        float DpiScale
+        {
+            set; get;
+        }
 
         /// <summary>
         /// Indicates if DPFCanvas busy on rendering.
@@ -345,7 +355,10 @@ namespace HelixToolkit.UWP
         /// The render buffer.
         /// </value>
         DX11RenderBufferProxyBase RenderBuffer { get; }
-
+        /// <summary>
+        /// Occurs when [scene graph updated].
+        /// </summary>
+        event EventHandler SceneGraphUpdated;
         /// <summary>
         /// Clears the render target.
         /// </summary>

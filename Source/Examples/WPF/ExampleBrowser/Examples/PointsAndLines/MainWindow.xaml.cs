@@ -65,6 +65,8 @@ namespace PointsAndLinesDemo
 
         public bool ShowWireLines { get; set; }
 
+        public bool IsMirrored { get; set; }
+
         public Point3DCollection Points
         {
             get
@@ -155,8 +157,10 @@ namespace PointsAndLinesDemo
 
             if (!this.ShowScreenSpaceLines3D && this.screenSpaceLines != null)
             {
-                View1.Children.Remove(this.screenSpaceLines);
-                this.screenSpaceLines = null;
+                /* Please close and reopen the Window to remove screenSpaceLines. */
+                //this.screenSpaceLines.IsRendering = false; // property IsRendering does not exist
+                //View1.Children.Remove(this.screenSpaceLines);
+                //this.screenSpaceLines = null;
             }
 
             if (this.ShowWireLines && this.wireLines == null)
@@ -179,21 +183,25 @@ namespace PointsAndLinesDemo
             if (this.linesVisual != null)
             {
                 this.linesVisual.Points = this.Points;
+                this.linesVisual.Transform = IsMirrored ? new ScaleTransform3D(-1, 1, 1) : new ScaleTransform3D(1, 1, 1);
             }
 
             if (this.pointsVisual != null)
             {
                 this.pointsVisual.Points = this.Points;
+                this.pointsVisual.Transform = IsMirrored ? new ScaleTransform3D(-1, 1, 1) : new ScaleTransform3D(1, 1, 1);
             }
 
             if (this.screenSpaceLines != null)
             {
                 this.screenSpaceLines.Points = this.Points;
+                this.screenSpaceLines.Transform = IsMirrored ? new ScaleTransform3D(-1, 1, 1) : new ScaleTransform3D(1, 1, 1);
             }
 
             if (this.wireLines != null)
             {
                 this.wireLines.Lines = this.Points;
+                this.wireLines.Transform = IsMirrored ? new ScaleTransform3D(-1, 1, 1) : new ScaleTransform3D(1, 1, 1);
             }
         }
 

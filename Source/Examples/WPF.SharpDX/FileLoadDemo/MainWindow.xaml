@@ -26,6 +26,7 @@
             CameraMode="Inspect"
             CameraRotationMode="Trackball"
             EffectsManager="{Binding EffectsManager}"
+            EnableSwapChainRendering="True"
             FXAALevel="Low">
             <hx:Viewport3DX.InputBindings>
                 <KeyBinding Key="B" Command="hx:ViewportCommands.BackView" />
@@ -69,6 +70,10 @@
                 <MenuItem Command="{Binding OpenFileCommand}" Header="Open File" />
                 <MenuItem Command="{Binding ExportCommand}" Header="Export" />
             </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Command="{Binding CopyAsBitmapCommand}" Header="Copy As Bitmap (Window Size)" />
+                <MenuItem Command="{Binding CopyAsHiresBitmapCommand}" Header="Copy as Hiresolution Bitmap (1920x1080)" />
+            </MenuItem>
         </Menu>
 
         <Grid
@@ -93,12 +98,17 @@
                 <CheckBox Margin="4" IsChecked="{Binding RenderEnvironmentMap}">Render EnvironmentMap</CheckBox>
                 <CheckBox Margin="4" IsChecked="{Binding RenderFlat}">Flat Shading</CheckBox>
                 <Separator />
-                <CheckBox Margin="4" IsChecked="{Binding EnableAnimation}">Enable Animation</CheckBox>
+                <CheckBox x:Name="aniCheckbox" Margin="4" IsChecked="{Binding EnableAnimation}">Enable Animation</CheckBox>
                 <TextBlock>Animations</TextBlock>
                 <ComboBox
-                    DisplayMemberPath="Name"
+                    DisplayMemberPath="Name" IsEnabled="{Binding ElementName=aniCheckbox, Path=IsChecked}"
                     ItemsSource="{Binding Animations}"
                     SelectedItem="{Binding SelectedAnimation}" />
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="PlayBack Speed: "/>
+                    <TextBlock Text="{Binding Speed}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Slider Value="{Binding Speed}" Minimum="0" Maximum="50" SmallChange="0.5"/>
                 <Separator />
                 <TextBlock>Scene Graph</TextBlock>
             </StackPanel>

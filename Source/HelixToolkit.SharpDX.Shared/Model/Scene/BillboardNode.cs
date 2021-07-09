@@ -71,6 +71,10 @@ namespace HelixToolkit.UWP
                 {
                     return true;
                 }
+                if (Geometry is IBillboardText billboard && !billboard.IsInitialized)
+                {
+                    return true;
+                }
                 return BoundingFrustumExtensions.Intersects(ref viewFrustum, ref BoundManager.BoundsSphereWithTransform);// viewFrustum.Intersects(ref sphere);
             }
 
@@ -113,11 +117,11 @@ namespace HelixToolkit.UWP
             /// <param name="ray">The ray.</param>
             /// <param name="hits">The hits.</param>
             /// <returns></returns>
-            protected override bool OnHitTest(RenderContext context, Matrix totalModelMatrix, ref Ray ray, ref List<HitTestResult> hits)
+            protected override bool OnHitTest(HitTestContext context, Matrix totalModelMatrix, ref List<HitTestResult> hits)
             {
                 if (Material is BillboardMaterialCore c)
                 {
-                    return (Geometry as BillboardBase).HitTest(context, totalModelMatrix, ref ray, ref hits, this.WrapperSource, c.FixedSize);
+                    return (Geometry as BillboardBase).HitTest(context, totalModelMatrix, ref hits, this.WrapperSource, c.FixedSize);
                 }
                 else
                 {
@@ -125,7 +129,7 @@ namespace HelixToolkit.UWP
                 }
             }
 
-            protected override bool PreHitTestOnBounds(ref Ray ray)
+            protected override bool PreHitTestOnBounds(HitTestContext context)
             {
                 return true;
             }

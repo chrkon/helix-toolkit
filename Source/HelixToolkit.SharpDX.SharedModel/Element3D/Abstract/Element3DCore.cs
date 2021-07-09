@@ -31,7 +31,7 @@ namespace HelixToolkit.Wpf.SharpDX
         /// External Wrapper core to be used for different platform
         /// </summary>
 #if NETFX_CORE
-        public abstract class Element3DCore : ItemsControl, IDisposable
+        public abstract class Element3DCore : Control, IDisposable
 #else
         public abstract class Element3DCore : FrameworkContentElement, IDisposable
 #endif
@@ -162,9 +162,9 @@ namespace HelixToolkit.Wpf.SharpDX
             /// <param name="ray">The ray.</param>
             /// <param name="hits">The hits.</param>
             /// <returns></returns>
-            public virtual bool HitTest(RenderContext context, Ray ray, ref List<HitTestResult> hits)
+            public virtual bool HitTest(HitTestContext context, ref List<HitTestResult> hits)
             {
-                return SceneNode.HitTest(context, ray, ref hits);
+                return SceneNode.HitTest(context, ref hits);
             }
             #endregion
 

@@ -314,6 +314,20 @@ namespace HelixToolkit.UWP
                 }
                 get { return width; }
             }
+
+            private float dpiScale = 1;
+            public float DpiScale
+            {
+                set
+                {
+                    float oldDpiScale = dpiScale;
+                    if (Set(ref dpiScale, value))
+                    {
+                        Resize((int)(ActualWidth / oldDpiScale), (int)(ActualHeight / oldDpiScale), true);
+                    }
+                }
+                get => dpiScale;
+            }
             /// <summary>
             /// Gets or sets a value indicating whether this instance is busy.
             /// </summary>
@@ -547,6 +561,8 @@ namespace HelixToolkit.UWP
             private readonly Func<IDevice3DResources, IRenderer> createRendererFunction;
 
             public event EventHandler<BoolArgs> FrustumEnabledChanged;
+
+            public event EventHandler SceneGraphUpdated;
     #endregion
 
     #region Private variables
@@ -571,7 +587,9 @@ namespace HelixToolkit.UWP
 
             private volatile bool UpdatePerFrameRenderableRequested = true;
 
-            private SynchronizationContext syncContext { get => SynchronizationContext.Current; }
+            private readonly object lockObj = new object();
+
+            protected SynchronizationContext SyncContext { get => SynchronizationContext.Current; }
     #endregion
 
             /// <summary>
@@ -788,7 +806,7 @@ namespace HelixToolkit.UWP
                 else
                 {
                     EndD3D();
-                    StartD3D((int)Math.Floor(ActualWidth), (int)Math.Floor(ActualHeight));
+                    StartD3D((int)Math.Floor(ActualWidth / DpiScale), (int)Math.Floor(ActualHeight / DpiScale));
                 }
             }
             /// <summary>
@@ -796,43 +814,49 @@ namespace HelixToolkit.UWP
             /// </summary>
             public void StartD3D(int width, int height)
             {
-                Log(LogLevel.Information, $"Width = {width}; Height = {height};");
-                if (IsInitialized)
+                lock (lockObj)
                 {
-                    Log(LogLevel.Information, $"RenderHost already Initialized.");
+                    Log(LogLevel.Information, $"Width = {width}; Height = {height};");
+                    if (IsInitialized)
+                    {
+                        Log(LogLevel.Information, $"RenderHost already Initialized.");
+                        StartRendering();
+                        return;
+                    }
+                    ActualWidth = width * DpiScale;
+                    ActualHeight = height * DpiScale;
+                    isLoaded = true;
+                    if (EffectsManager == null || EffectsManager.Device == null || EffectsManager.Device.IsDisposed)
+                    {
+                        Log(LogLevel.Information, $"EffectsManager is not valid");
+                        return;
+                    }
+        #if DX11_1
+                    immediateDeviceContext = Collect(new DeviceContextProxy(effectsManager.Device.ImmediateContext1, effectsManager.Device));
+        #else
+                    immediateDeviceContext = Collect(new DeviceContextProxy(effectsManager.Device.ImmediateContext, effectsManager.Device));
+        #endif
+                    RenderTechnique = EffectsManager[DefaultRenderTechniqueNames.Mesh];
+                    CreateAndBindBuffers();
+                    IsInitialized = true;
+                    Log(LogLevel.Information, $"Initialized.");
+                    AttachRenderable(EffectsManager);
                     StartRendering();
-                    return;
                 }
-                ActualWidth = width;
-                ActualHeight = height;
-                isLoaded = true;
-                if (EffectsManager == null || EffectsManager.Device == null || EffectsManager.Device.IsDisposed)
-                {
-                    Log(LogLevel.Information, $"EffectsManager is not valid");
-                    return;
-                }
-    #if DX11_1
-                immediateDeviceContext = Collect(new DeviceContextProxy(effectsManager.Device.ImmediateContext1, effectsManager.Device));
-    #else
-                immediateDeviceContext = Collect(new DeviceContextProxy(effectsManager.Device.ImmediateContext, effectsManager.Device));
-    #endif
-                RenderTechnique = EffectsManager[DefaultRenderTechniqueNames.Mesh];
-                CreateAndBindBuffers();
-                IsInitialized = true;
-                Log(LogLevel.Information, $"Initialized.");
-                AttachRenderable(EffectsManager);
-                StartRendering();
             }
             /// <summary>
             /// Starts the rendering.
             /// </summary>
             public virtual void StartRendering()
             {
-                Log(LogLevel.Information, "");
-                renderStatistics.Reset();
-                lastRenderingDuration = TimeSpan.Zero;
-                lastRenderTime = TimeSpan.Zero;
-                InvalidateSceneGraph();
+                lock (lockObj)
+                {
+                    Log(LogLevel.Information, "");
+                    renderStatistics.Reset();
+                    lastRenderingDuration = TimeSpan.Zero;
+                    lastRenderTime = TimeSpan.Zero;
+                    InvalidateSceneGraph();
+                }
                 StartRenderLoop?.Invoke(this, EventArgs.Empty);
             }
             /// <summary>
@@ -857,7 +881,6 @@ namespace HelixToolkit.UWP
                 EndD3D();
                 EffectsManager?.DisposeAllResources();
                 EffectsManager?.Reinitialize();
-                //StartD3D(ActualWidth, ActualHeight);
             }
 
             /// <summary>
@@ -934,14 +957,17 @@ namespace HelixToolkit.UWP
             /// </summary>
             public void EndD3D()
             {
-                Log(LogLevel.Information, "");
-                StopRendering();
-                IsInitialized = false;
-                immediateDeviceContext = null;
+                lock (lockObj)
+                {
+                    Log(LogLevel.Information, "");
+                    StopRendering();
+                    IsInitialized = false;
+                    immediateDeviceContext = null;
             
-                OnEndingD3D();
-                DetachRenderable();
-                DisposeBuffers();
+                    OnEndingD3D();
+                    DetachRenderable();
+                    DisposeBuffers();
+                }
             }
             /// <summary>
             /// Called when [ending d3 d].
@@ -993,29 +1019,43 @@ namespace HelixToolkit.UWP
             /// <param name="height">The height.</param>
             public void Resize(int width, int height)
             {
-                if(MathUtil.NearEqual(ActualWidth, width) && MathUtil.NearEqual(ActualHeight, height))
+                Resize(width, height, false);
+            }
+
+            private void Resize(int width, int height, bool dpiChanged)
+            {
+                if (MathUtil.NearEqual(ActualWidth, width * DpiScale) && MathUtil.NearEqual(ActualHeight, height * DpiScale))
                 {
                     return;
                 }
-                ActualWidth = width;
-                ActualHeight = height;
+                ActualWidth = Math.Max(2, width * DpiScale);
+                ActualHeight = Math.Max(2, height * DpiScale);
                 Log(LogLevel.Information, $"Width = {width}; Height = {height};");
-                if (IsInitialized)
+                lock (lockObj)
                 {
-                    StopRendering();
-                    var texture = renderBuffer.Resize((int)Math.Floor(ActualWidth), (int)Math.Floor(ActualHeight));
-                    OnNewRenderTargetTexture?.Invoke(this, new Texture2DArgs(texture));
-                    if (Viewport != null)
+                    if (IsInitialized)
                     {
-                        var overlay = Viewport.D2DRenderables.FirstOrDefault();
-                        if (overlay != null)
+                        StopRendering();
+                        var texture = renderBuffer.Resize((int)Math.Floor(ActualWidth), (int)Math.Floor(ActualHeight));
+                        OnNewRenderTargetTexture?.Invoke(this, new Texture2DArgs(texture));
+                        if (Viewport != null)
                         {
-                            overlay.InvalidateAll();
+                            var overlay = Viewport.D2DRenderables.FirstOrDefault();
+                            if (overlay != null)
+                            {
+                                if (dpiChanged)
+                                {
+                                    overlay.Detach();
+                                    overlay.Attach(this);
+                                }
+                                overlay.InvalidateAll();
+                            }
                         }
+                        SyncContext.Post((o) => { StartRendering(); }, null);
                     }
-                    syncContext.Post((o) => { StartRendering(); }, null);                
                 }
             }
+
             /// <summary>
             /// Sets the default render targets.
             /// </summary>
@@ -1029,7 +1069,7 @@ namespace HelixToolkit.UWP
             {
                 if (isLoaded && !IsInitialized)
                 {
-                    syncContext.Post((o) => 
+                    SyncContext.Post((o) => 
                     {
                         StartD3D((int)Math.Floor(ActualWidth), (int)Math.Floor(ActualHeight));
                     }, null);
@@ -1039,6 +1079,27 @@ namespace HelixToolkit.UWP
             private void EffectsManager_OnInvalidateRenderer(object sender, EventArgs e)
             {
                 InvalidateRender();
+            }
+
+            public void ReinitializeEffectsManager()
+            {
+                lock (lockObj)
+                {
+                    EffectsManager?.DisposeAllResources();
+                }
+                SyncContext.Post((o) =>
+                {
+                    lock (lockObj)
+                    {
+                        
+                        EffectsManager?.Reinitialize();
+                    }
+                }, null);
+            }
+
+            protected void TriggerSceneGraphUpdated()
+            {
+                SceneGraphUpdated?.Invoke(this, EventArgs.Empty);
             }
             /// <summary>
             /// Releases unmanaged and - optionally - managed resources.

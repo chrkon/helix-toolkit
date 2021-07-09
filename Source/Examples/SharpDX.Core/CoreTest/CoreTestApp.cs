@@ -13,10 +13,47 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace CoreTest
 {
+    public static class DpiHelper
+    {
+        [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern int GetDeviceCaps(IntPtr hDC, int nIndex);
+
+        public enum DeviceCap
+        {
+            VERTRES = 10,
+            DESKTOPVERTRES = 117
+        }
+
+        public static double GetWindowsScreenScalingFactor(bool percentage = true)
+        {
+            //Create Graphics object from the current windows handle
+            var GraphicsObject = System.Drawing.Graphics.FromHwnd(IntPtr.Zero);
+            //Get Handle to the device context associated with this Graphics object
+            IntPtr DeviceContextHandle = GraphicsObject.GetHdc();
+            //Call GetDeviceCaps with the Handle to retrieve the Screen Height
+            int LogicalScreenHeight = GetDeviceCaps(DeviceContextHandle, (int)DeviceCap.VERTRES);
+            int PhysicalScreenHeight = GetDeviceCaps(DeviceContextHandle, (int)DeviceCap.DESKTOPVERTRES);
+            //Divide the Screen Heights to get the scaling factor and round it to two decimals
+            double ScreenScalingFactor = Math.Round((double)PhysicalScreenHeight / (double)LogicalScreenHeight, 2);
+            //If requested as percentage - convert it
+            if (percentage)
+            {
+                ScreenScalingFactor *= 100.0;
+            }
+            //Release the Handle and Dispose of the GraphicsObject object
+            GraphicsObject.ReleaseHdc(DeviceContextHandle);
+            GraphicsObject.Dispose();
+            //Return the Scaling Factor
+            return ScreenScalingFactor;
+        }
+    }
+
+
     public class CoreTestApp
     {
         public ViewportCore Viewport { get => viewport; }
@@ -38,6 +75,7 @@ namespace CoreTest
         private CameraController cameraController;
         private Stack<IEnumerator<SceneNode>> stackCache = new Stack<IEnumerator<SceneNode>>();
         private IApplyPostEffect currentHighlight = null;
+        private double dpiScale = 1;
 
         private ViewportOptions options = new ViewportOptions()
         {
@@ -51,11 +89,15 @@ namespace CoreTest
             WalkAround = false,
             ShowRenderDetail = false,
             ShowEnvironmentMap = false,
+            EnableDpiScale = true
         };
 
         public CoreTestApp(Form window)
         {
+            dpiScale = DpiHelper.GetWindowsScreenScalingFactor(false);
+
             viewport = new ViewportCore(window.Handle);
+            viewport.DpiScale = dpiScale;
             cameraController = new CameraController(viewport);
             cameraController.CameraMode = CameraMode.Inspect;
             cameraController.CameraRotationMode = CameraRotationMode.Trackball;
@@ -89,6 +131,7 @@ namespace CoreTest
             viewport.BackgroundColor = new Color4(options.BackgroundColor.X, options.BackgroundColor.Y, options.BackgroundColor.Z, 1);
             viewport.EnableSSAO = options.EnableSSAO;
             viewport.ShowRenderDetail = options.ShowRenderDetail;
+            viewport.DpiScale = options.EnableDpiScale ? dpiScale : 1;
             if (options.ShowWireframeChanged)
             {
                 options.ShowWireframeChanged = false;
@@ -183,12 +226,7 @@ namespace CoreTest
             imGui.UpdatingImGuiUI += ImGui_UpdatingImGuiUI;
             groupEffects.AddChildNode(new NodePostEffectBorderHighlight() { EffectName = "highlightEffect", Color = Color.Yellow });
             viewport.Items.AddChildNode(groupEffects);
-            var environmentTexture = new MemoryStream();
-            using (var fs = File.Open("Cubemap_Grandcanyon.dds", FileMode.Open))
-            {
-                fs.CopyTo(environmentTexture);
-            }
-            environmentMap = new EnvironmentMapNode() { Texture = environmentTexture };
+            environmentMap = new EnvironmentMapNode() { Texture = TextureModel.Create("Cubemap_Grandcanyon.dds") };
             viewport.Items.AddChildNode(environmentMap);
             viewport.NodeHitOnMouseDown += Viewport_NodeHitOnMouseDown;
         }
@@ -214,17 +252,8 @@ namespace CoreTest
 
         private void InitializeMaterials()
         {
-            var diffuse = new MemoryStream();
-            using (var fs = File.Open("TextureCheckerboard2.jpg", FileMode.Open))
-            {
-                fs.CopyTo(diffuse);
-            }
-
-            var normal = new MemoryStream();
-            using (var fs = File.Open("TextureCheckerboard2_dot3.jpg", FileMode.Open))
-            {
-                fs.CopyTo(normal);
-            }
+            var diffuse = TextureModel.Create("TextureCheckerboard2.jpg");
+            var normal = TextureModel.Create("TextureCheckerboard2_dot3.jpg");
             materials.Add("red", new DiffuseMaterialCore() { DiffuseColor = Color.Red, DiffuseMap = diffuse });
             materials.Add("green", new DiffuseMaterialCore() { DiffuseColor = Color.Green, DiffuseMap = diffuse });
             materials.Add("blue", new DiffuseMaterialCore() { DiffuseColor = Color.Blue, DiffuseMap = diffuse });

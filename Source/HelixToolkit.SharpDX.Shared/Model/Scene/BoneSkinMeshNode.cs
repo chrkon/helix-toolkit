@@ -20,6 +20,8 @@ namespace HelixToolkit.UWP
     namespace Model.Scene
     {
         using Core;
+        using Animations;
+
         /// <summary>
         /// 
         /// </summary>
@@ -42,6 +44,19 @@ namespace HelixToolkit.UWP
                     return (RenderCore as BoneSkinRenderCore).BoneMatrices;
                 }
             }
+
+            public float[] MorphTargetWeights
+            {
+                get
+                {
+                    return (RenderCore as BoneSkinRenderCore).MorphTargetWeights;
+                }
+                set
+                {
+                    (RenderCore as BoneSkinRenderCore).MorphTargetWeights = value;
+                }
+            }
+
             /// <summary>
             /// Gets or sets the bones.
             /// </summary>
@@ -80,19 +95,15 @@ namespace HelixToolkit.UWP
                 return !(EffectsManager.GeometryBufferManager.Register<BoneSkinnedMeshBufferModel>(modelGuid, geometry) is IBoneSkinMeshBufferModel buffer) ? 
                     EmptyGeometryBufferModel.Empty : new BoneSkinPreComputeBufferModel(buffer, buffer.VertexStructSize.FirstOrDefault()) as IAttachableBufferModel;
             }
-            /// <summary>
-            /// Views the frustum test.
-            /// </summary>
-            /// <param name="viewFrustum">The view frustum.</param>
-            /// <returns></returns>
+
             public override bool TestViewFrustum(ref BoundingFrustum viewFrustum)
             {
                 return BoneMatrices.Length == 0 ? base.TestViewFrustum(ref viewFrustum) : true;
             }
 
-            protected override bool PreHitTestOnBounds(ref Ray ray)
+            protected override bool PreHitTestOnBounds(HitTestContext context)
             {
-                return BoneMatrices.Length == 0 ? base.PreHitTestOnBounds(ref ray) : true;
+                return BoneMatrices.Length == 0 ? base.PreHitTestOnBounds(context) : true;
             }
             /// <summary>
             /// Creates the skeleton node.
@@ -183,7 +194,46 @@ namespace HelixToolkit.UWP
                 return skinnedVerticesCache;
             }
 
-            protected override bool OnHitTest(RenderContext context, Matrix totalModelMatrix, ref Ray rayWS, ref List<HitTestResult> hits)
+            /// <summary>
+            /// Make sure to use SetWeight so that the mutation of elements can be seen
+            /// </summary>
+            /// <param name="i">index</param>
+            /// <param name="w">weight, typically 0-1</param>
+            public void SetWeight(int i, float w)
+            {
+                (RenderCore as BoneSkinRenderCore).SetWeight(i, w);
+            }
+
+            /// <summary>
+            /// Tells the render core to update it's morph target weight buffer
+            /// </summary>
+            public void WeightUpdated()
+            {
+                (RenderCore as BoneSkinRenderCore).SetWeight(0, MorphTargetWeights[0]);
+                InvalidateRender();
+            }
+
+            public void SetupIdentitySkeleton()
+            {
+                BoneMatrices = new Matrix[] { Matrix.Identity };
+                Bones = new Bone[] { new Bone() { Name = "Identity", BindPose = Matrix.Identity, InvBindPose = Matrix.Identity, BoneLocalTransform = Matrix.Identity } };
+
+                BoneSkinnedMeshGeometry3D geom = Geometry as BoneSkinnedMeshGeometry3D;
+                geom.VertexBoneIds = new BoneIds[geom.Positions.Count];
+                for (int i = 0; i < geom.VertexBoneIds.Count; i++)
+                    geom.VertexBoneIds[i] = new BoneIds() { Bone1 = 0, Weights = new Vector4(1, 0, 0, 0) };
+            }
+
+            public void UpdateBoneMatrices()
+            {
+                BoneMatrices = new Matrix[Bones.Length];
+                BoneMatrices = BoneMatrices.Select((m, i) => Bones[i].Node.TotalModelMatrixInternal).ToArray();
+            }
+
+            public bool InitializeMorphTargets(MorphTargetVertex[] mtv, int pitch)
+                => (RenderCore as BoneSkinRenderCore).InitializeMorphTargets(mtv, pitch);
+
+            protected override bool OnHitTest(HitTestContext context, Matrix totalModelMatrix, ref List<HitTestResult> hits)
             {
                 if(BoneMatrices.Length > 0 && Geometry is BoneSkinnedMeshGeometry3D skGeometry)
                 {
@@ -193,14 +243,14 @@ namespace HelixToolkit.UWP
                         {
                             skinnedVerticesCache = new Vector3[skGeometry.Positions.Count];
                         }
-                        if (skCore.CopySkinnedToArray(context.RenderHost.ImmediateDeviceContext, skinnedVerticesCache) > 0)
+                        if (skCore.CopySkinnedToArray(context.RenderMatrices.RenderHost.ImmediateDeviceContext, skinnedVerticesCache) > 0)
                         {
                             return skGeometry.HitTestWithSkinnedVertices(context, skinnedVerticesCache,
-                                totalModelMatrix, ref rayWS, ref hits, WrapperSource);
+                                totalModelMatrix, ref hits, WrapperSource);
                         }
                     }
                 }
-                return base.OnHitTest(context, totalModelMatrix, ref rayWS, ref hits);
+                return base.OnHitTest(context, totalModelMatrix, ref hits);
             }
         }
     }

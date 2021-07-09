@@ -29,7 +29,7 @@ cbuffer cbTransforms : register(b0)
     float OITPower;
     float OITSlope;
     int OITWeightMode;
-    int OITReserved;
+    float DpiScale;
 };
 
 #if defined(MESHSIMPLE)
@@ -103,6 +103,8 @@ cbuffer cbMesh : register(b1)
     float4 displacementMapScaleMask = float4(0, 0, 0, 1);
     float4 uvTransformR1;
     float4 uvTransformR2;
+    float vertColorBlending;
+    float3 padding4;
 };
 #endif
 
@@ -210,18 +212,18 @@ cbuffer cbShadow : register(b5)
 cbuffer cbClipping : register(b6)
 {
     bool4 EnableCrossPlane;
+    bool4 EnableCrossPlane5To8;
     float4 CrossSectionColors;
     int CuttingOperation;
     float3 paddingClipping;
-	// Format:
-	// M00M01M02 PlaneNormal1 M03 Plane1 Distance to origin
-	// M10M11M12 PlaneNormal2 M13 Plane2 Distance to origin
-	// M20M21M22 PlaneNormal3 M23 Plane3 Distance to origin
-	// M30M31M32 PlaneNormal4 M33 Plane4 Distance to origin
     float4 CrossPlane1Params;
     float4 CrossPlane2Params;
     float4 CrossPlane3Params;
     float4 CrossPlane4Params;
+    float4 CrossPlane5Params;
+    float4 CrossPlane6Params;
+    float4 CrossPlane7Params;
+    float4 CrossPlane8Params;
 }
 #endif
 
@@ -291,6 +293,12 @@ cbuffer cbSSAO : register(b1)
 }
 #endif
 
+cbuffer cbMorphTarget : register(b9)
+{
+	int mtCount; //Number of targets
+	int mtPitch; //Pitch between targets for deltas buffer
+}
+
 ///------------------Textures---------------------
 Texture2D texDiffuseMap : register(t0);
 Texture2D<float3> texNormalMap : register(t1);
@@ -329,6 +337,10 @@ Texture1D texColorStripe1DX : register(t12);
 Texture1D texColorStripe1DY : register(t13);
 
 StructuredBuffer<matrix> skinMatrices : register(t40);
+
+StructuredBuffer<float> morphTargetWeights : register(t60);
+StructuredBuffer<float3> morphTargetDeltas : register(t61);
+StructuredBuffer<int> morphTargetOffsets : register(t62);
 
 Texture2D texSprite : register(t50);
 

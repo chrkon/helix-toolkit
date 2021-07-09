@@ -19,7 +19,7 @@ namespace HelixToolkit.UWP
         using Shaders;
         using Utilities;
 
-        public sealed class BillboardMaterialVariable : MaterialVariable
+        public class BillboardMaterialVariable : MaterialVariable
         {
             /// <summary>
             /// Set texture variable name insider shader for binding
@@ -66,8 +66,9 @@ namespace HelixToolkit.UWP
                 AddPropertyBinding(nameof(BillboardMaterialCore.FixedSize), () => { WriteValue(PointLineMaterialStruct.FixedSize, materialCore.FixedSize); });
                 AddPropertyBinding(nameof(BillboardMaterialCore.Type), () => { WriteValue(PointLineMaterialStruct.ParamsStr, new Vector4((int)materialCore.Type, 0, 0, 0)); });
                 AddPropertyBinding(nameof(BillboardMaterialCore.SamplerDescription), () => {
+                    var newSampler = EffectsManager.StateManager.Register(materialCore.SamplerDescription);
                     RemoveAndDispose(ref textureSampler);
-                    textureSampler = Collect(EffectsManager.StateManager.Register(materialCore.SamplerDescription));
+                    textureSampler = Collect(newSampler);
                 });
             }
 

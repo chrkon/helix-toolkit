@@ -104,9 +104,14 @@ namespace HelixToolkit.UWP
             public bool ForceCullMode = false;
 
             /// <summary>
-            ///     The ignore emissive color
+            /// Ignores emissive color during importing.
             /// </summary>
             public bool IgnoreEmissiveColor = false;
+
+            /// <summary>
+            /// Ignores the ambient color during importing.
+            /// </summary>
+            public bool IgnoreAmbientColor = false;
 
             /// <summary>
             ///     Force to use material type. Default is Auto
@@ -173,16 +178,21 @@ namespace HelixToolkit.UWP
             /// </summary>
             public bool IsSourceMatrixColumnMajor = true;
 
-            public ITextureIO TextureLoader;
+            /// <summary>
+            /// The build octree automatically during loading.
+            /// </summary>
+            public bool BuildOctree = true;
+
+            public ITexturePathResolver TexturePathResolver;
             /// <summary>
             /// Initializes a new instance of the <see cref="ImporterConfiguration"/> class.
             /// </summary>
             public ImporterConfiguration()
             {
 #if WINDOWS_UWP
-                TextureLoader = new UWPTextureLoader();
+                TexturePathResolver = new UWPTextureLoader();
 #else
-                TextureLoader = new DefaultTextureLoader();
+                TexturePathResolver = new DefaultTexturePathResolver();
 #endif
             }
         }

@@ -168,14 +168,11 @@ namespace HelixToolkit.UWP
             ///
             /// </summary>
             public CoordinateSystemNode()
-            {          
+            {
+                IsHitTestVisible = false;
+                CameraType = ScreenSpacedCameraType.Perspective;
                 arrowMeshModel.Material = new ColorMaterialCore();           
                 arrowMeshModel.CullMode = CullMode.Back;
-                arrowMeshModel.IsHitTestVisible = false;
-                arrowMeshModel.RenderType = RenderType.ScreenSpaced;
-
-                axisBillboard.IsHitTestVisible = false;
-                axisBillboard.RenderType = RenderType.ScreenSpaced;
                 axisBillboard.EnableViewFrustumCheck = false;
                 var axisLabel = new BillboardText3D();
                 axisLabel.TextInfo.Add(new TextInfo());
@@ -282,14 +279,8 @@ namespace HelixToolkit.UWP
                 }
                 mesh.Colors = colors;
             }
-            /// <summary>
-            /// Determines whether this instance [can hit test] the specified context.
-            /// </summary>
-            /// <param name="context">The context.</param>
-            /// <returns>
-            ///   <c>true</c> if this instance [can hit test] the specified context; otherwise, <c>false</c>.
-            /// </returns>
-            protected override bool CanHitTest(RenderContext context)
+
+            protected override bool CanHitTest(HitTestContext context)
             {
                 return false;
             }

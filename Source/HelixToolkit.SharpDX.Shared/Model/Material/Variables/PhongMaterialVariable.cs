@@ -24,7 +24,7 @@ namespace HelixToolkit.UWP
         /// <summary>
         /// Default PhongMaterial Variables
         /// </summary>
-        public sealed class PhongMaterialVariables : MaterialVariable
+        public class PhongMaterialVariables : MaterialVariable
         {
             private const int NUMTEXTURES = 6;
 
@@ -217,6 +217,7 @@ namespace HelixToolkit.UWP
                 AddPropertyBinding(nameof(PhongMaterialCore.RenderDisplacementMap), () => { WriteValue(PhongPBRMaterialStruct.HasDisplacementMapStr, material.RenderDisplacementMap && textureResources[DisplaceIdx] != null ? 1 : 0); });
                 AddPropertyBinding(nameof(PhongMaterialCore.RenderEmissiveMap), () => { WriteValue(PhongPBRMaterialStruct.HasEmissiveMapStr, material.RenderEmissiveMap && textureResources[EmissiveIdx] != null ? 1 : 0); });
                 AddPropertyBinding(nameof(PhongMaterialCore.EnableFlatShading), () => { WriteValue(PhongPBRMaterialStruct.RenderFlat, material.EnableFlatShading); });
+                AddPropertyBinding(nameof(PhongMaterialCore.VertexColorBlendingFactor), () => { WriteValue(PhongPBRMaterialStruct.VertColorBlending, material.VertexColorBlendingFactor); });
                 AddPropertyBinding(nameof(PhongMaterialCore.DiffuseMap), () => 
                 {
                     CreateTextureView(material.DiffuseMap, DiffuseIdx);
@@ -245,14 +246,16 @@ namespace HelixToolkit.UWP
                 });
                 AddPropertyBinding(nameof(PhongMaterialCore.DiffuseMapSampler), () =>
                 {
+                    var newSampler = statePoolManager.Register(material.DiffuseMapSampler);
                     RemoveAndDispose(ref surfaceSampler);
-                    surfaceSampler = Collect(statePoolManager.Register(material.DiffuseMapSampler));
+                    surfaceSampler = Collect(newSampler);
                 });
 
                 AddPropertyBinding(nameof(PhongMaterialCore.DisplacementMapSampler), () =>
                 {
+                    var newDisplaceSampler = statePoolManager.Register(material.DisplacementMapSampler);
                     RemoveAndDispose(ref displacementSampler);
-                    displacementSampler = Collect(statePoolManager.Register(material.DisplacementMapSampler));
+                    displacementSampler = Collect(newDisplaceSampler);
                 });
                 AddPropertyBinding(nameof(PhongMaterialCore.EmissiveMap), () =>
                 {
@@ -267,8 +270,9 @@ namespace HelixToolkit.UWP
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private void CreateTextureView(TextureModel textureModel, int index)
             {
+                var newTexture =  textureModel == null ? null : Collect(textureManager.Register(textureModel));
                 RemoveAndDispose(ref textureResources[index]);
-                textureResources[index] = textureModel == null ? null : Collect(textureManager.Register(textureModel));
+                textureResources[index] = newTexture;
                 if (textureResources[index] != null)
                 {
                     textureIndex |= 1u << index;
